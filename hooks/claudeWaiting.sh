@@ -18,7 +18,8 @@
 # @claude_role, seeded from CLAUDE_SESSION_ROLE (dispatch-ticket sets worker) or
 # orchestrator, and flipped by prefix + r.
 
-TMUX_BIN=/opt/homebrew/bin/tmux
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+TMUX_BIN=$(command -v tmux || echo /opt/homebrew/bin/tmux)
 STUCK_AFTER_SECONDS=3600
 EVENT_LOG=~/.local/state/claude-sessions/events.tsv
 THREAD_NOTES_DIR=~/.local/state/claude-sessions/threads
@@ -57,7 +58,7 @@ threadNote() {
 updateThreadNoteInBackground() {
     transcript=$(jq -r '.transcript_path // empty' <<<"$1" 2>/dev/null)
     [ -f "$transcript" ] || return
-    nohup python3 -I ~/.claude/hooks/updateThreadNote.py "$(threadNotePath "$TMUX_PANE")" "$transcript" </dev/null >/dev/null 2>&1 &
+    nohup python3 -I "$SCRIPT_DIR/updateThreadNote.py" "$(threadNotePath "$TMUX_PANE")" "$transcript" </dev/null >/dev/null 2>&1 &
 }
 
 focusPane() {
@@ -110,7 +111,7 @@ logEvent() {
 
 pendingWakers() {
     transcript=$(jq -r '.transcript_path // empty' <<<"$1" 2>/dev/null)
-    [ -f "$transcript" ] && python3 -I ~/.claude/hooks/pendingWakers.py "$transcript" 2>/dev/null
+    [ -f "$transcript" ] && python3 -I "$SCRIPT_DIR/pendingWakers.py" "$transcript" 2>/dev/null
 }
 
 reasonIcon() {

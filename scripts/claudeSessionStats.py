@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Report on Claude session states logged by ~/.claude/hooks/claudeWaiting.sh.
+"""Report on Claude session states logged by hooks/claudeWaiting.sh.
 
 Splits sessions by role: workers (dispatched executors, CLAUDE_SESSION_ROLE=worker or
 flipped with prefix + r), orchestrators (everything else), and unknown (logged before

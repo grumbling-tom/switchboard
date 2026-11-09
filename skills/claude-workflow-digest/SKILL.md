@@ -1,6 +1,6 @@
 ---
 name: claude-workflow-digest
-description: Report how the user's parallel Claude Code sessions are running, by running ~/.claude/scripts/claudeSessionStats.py over the session-state log the claudeWaiting.sh hooks write, and summarising it. Leads with responsiveness (how long sessions waited on the user, split by permission prompt, question and finished turn), then how many sessions worked or waited at once, then the longest waits and runs. Use when the user says "claude workflow digest", "session stats", "how long are my Claudes waiting on me", "how many Claudes ran at once", "workflow report for my manager", or asks for this week's or today's numbers. Read-only; never edits the script, the hooks or the log.
+description: Report how the user's parallel Claude Code sessions are running, by running the plugin's scripts/claudeSessionStats.py over the session-state log the claudeWaiting.sh hooks write, and summarising it. Leads with responsiveness (how long sessions waited on the user, split by permission prompt, question and finished turn), then how many sessions worked or waited at once, then the longest waits and runs. Use when the user says "claude workflow digest", "session stats", "how long are my Claudes waiting on me", "how many Claudes ran at once", "workflow report for my manager", or asks for this week's or today's numbers. Read-only; never edits the script, the hooks or the log.
 allowed-tools: Bash, Read
 ---
 
@@ -11,7 +11,7 @@ Report how quickly the user answers their Claude sessions, and how many run in p
 ## Run
 
 ```
-~/.claude/scripts/claudeSessionStats.py --since <YYYY-MM-DD> [--until <YYYY-MM-DD>]
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/claudeSessionStats.py --since <YYYY-MM-DD> [--until <YYYY-MM-DD>]
 ```
 
 Pick the period from the request; `--until` is exclusive. "Today" is `--since` today.

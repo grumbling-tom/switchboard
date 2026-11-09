@@ -1,6 +1,6 @@
 ---
 name: outcome
-description: Record the outcome a thread is aiming for and the design chosen to reach it, in a short note the Claude sessions picker (Command+J) shows above the pane capture. Writes it from the conversation straight away and shows it in chat, so the user can correct it afterwards. Use when the user says "/outcome", "write the outcome", "capture the design", "record what we decided", or when a settled design has changed.
+description: Record the outcome a thread is aiming for and the design chosen to reach it, in a short note the Claude sessions picker (prefix + j) shows above the pane capture. Writes it from the conversation straight away and shows it in chat, so the user can correct it afterwards. Use when the user says "/outcome", "write the outcome", "capture the design", "record what we decided", or when a settled design has changed.
 ---
 
 # Outcome
@@ -9,7 +9,7 @@ Keep the reason for a thread where the user will see it when they come back to i
 holds why the thread exists and how it gets there, never its status or progress: the picker
 shows those already.
 
-A background hook (`~/.claude/hooks/updateThreadNote.py`) already creates and revises this note
+A background hook (the plugin's `hooks/updateThreadNote.py`) already creates and revises this note
 after finished turns. Run this skill to write it now, or to fix what the hook wrote. Everyday
 progress is not a reason to rerun it.
 
@@ -46,5 +46,5 @@ progress is not a reason to rerun it.
    there are; leave out implementation detail the code will show. If something is not
    settled, leave it out and name it to the user as an open question.
 
-4. **Show it.** Print the saved note in chat and say it shows on the next Command+J. Do not
+4. **Show it.** Print the saved note in chat and say it shows on the next prefix + j. Do not
    ask for approval; the user corrects it afterwards if they want to.
