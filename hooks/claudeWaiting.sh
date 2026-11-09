@@ -10,9 +10,7 @@
 #   end           — SessionEnd hook: forget the pane
 #   status        — tmux status-right: working / stuck / waiting counts
 #   picker        — click the counts, or prefix + j (in a tmux popup): fzf list of
-#                   sessions with a live preview of the selected pane, under the
-#                   branch's /outcome note
-#                   (kept current after finished turns by updateThreadNote.py)
+#                   sessions with a live preview of the selected pane
 # Notifications are skipped while ~/.claude/notify-off exists. Every state change is
 # appended to $EVENT_LOG, which claudeSessionStats.py reports on, with the pane's role:
 # @claude_role, seeded from CLAUDE_SESSION_ROLE (dispatch-ticket sets worker) or
@@ -22,44 +20,6 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 TMUX_BIN=$(command -v tmux || echo /opt/homebrew/bin/tmux)
 STUCK_AFTER_SECONDS=3600
 EVENT_LOG=~/.local/state/claude-sessions/events.tsv
-THREAD_NOTES_DIR=~/.local/state/claude-sessions/threads
-MIN_CAPTURE_LINES=8
-NOTE_DIVIDER_LINES=4
-
-# The /outcome note's path for pane $1. A branch is one thread; sessions sharing main, or
-# outside a repo, are a thread each, keyed by session id.
-threadNotePath() {
-    panePath=$("$TMUX_BIN" display -p -t "$1" '#{pane_current_path}')
-    branch=$(git -C "$panePath" branch --show-current 2>/dev/null)
-    case "$branch" in
-    '' | main | master) key=session-$("$TMUX_BIN" display -p -t "$1" '#{@claude_session}') ;;
-    *) key=${branch//\//-} ;;
-    esac
-    echo "$THREAD_NOTES_DIR/$key.md"
-}
-
-threadNote() {
-    note=$(threadNotePath "$1")
-    changed=${note%.md}.changed
-    if [ -f "$changed" ] && [ ! "$note" -nt "$changed" ]; then
-        IFS=$'\t' read -r changedAt summary <"$changed"
-        echo "auto-updated $(formatAge $(($(date +%s) - changedAt))) ago: $summary"
-        echo
-    fi
-    if [ -f "$note" ]; then
-        cat "$note"
-    else
-        echo "No outcome yet"
-    fi
-}
-
-# Runs detached so the hook returns at once. updateThreadNote.py decides whether this turn
-# is due a check.
-updateThreadNoteInBackground() {
-    transcript=$(jq -r '.transcript_path // empty' <<<"$1" 2>/dev/null)
-    [ -f "$transcript" ] || return
-    nohup python3 -I "$SCRIPT_DIR/updateThreadNote.py" "$(threadNotePath "$TMUX_PANE")" "$transcript" </dev/null >/dev/null 2>&1 &
-}
 
 focusPane() {
     "$TMUX_BIN" switch-client -t "$1" \; select-window -t "$1" \; select-pane -t "$1"
@@ -92,11 +52,6 @@ updateLabel() {
     setPane @pane_label "$label"
 }
 
-rememberSession() {
-    sessionId=$(jq -r '.session_id // empty' <<<"$1" 2>/dev/null)
-    [ -n "$sessionId" ] && setPane @claude_session "$sessionId"
-}
-
 logEvent() {
     sessionId=$(jq -r '.session_id // empty' <<<"$1" 2>/dev/null)
     label=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{?@pane_label,#{@pane_label},#{window_name}}')
@@ -126,15 +81,6 @@ reasonIcon() {
     esac
 }
 
-formatAge() {
-    minutes=$(($1 / 60))
-    if [ "$minutes" -lt 60 ]; then
-        echo "${minutes}m"
-    else
-        printf '%dh%02d' $((minutes / 60)) $((minutes % 60))
-    fi
-}
-
 firstLine() {
     grep -v -E '^[[:space:]]*(#|---|```)' | sed -e 's/[*`]//g' -e 's/^[> -]*//' | awk 'NF { print; exit }' | cut -c1-180
 }
@@ -162,7 +108,6 @@ mark)
     reason=${2:-done}
     input=$(cat)
     updateLabel "$input"
-    rememberSession "$input"
     if [ "$reason" = done ]; then
         read -r wakerState wakerDeadline <<<"$(pendingWakers "$input")"
         if [ -n "$wakerState" ]; then
@@ -181,7 +126,6 @@ mark)
 
     setPane @claude_state "$reason" \; set -p -t "$TMUX_PANE" @claude_since "$(date +%s)"
     logEvent "$input" "$reason"
-    [ "$reason" = done ] && updateThreadNoteInBackground "$input"
 
     [ -e ~/.claude/notify-off ] && exit 0
     isPaneVisible=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{&&:#{window_active},#{pane_active}}')
@@ -210,7 +154,6 @@ work)
     [ -n "$TMUX_PANE" ] || exit 0
     input=$(cat)
     updateLabel "$input"
-    rememberSession "$input"
     now=$(date +%s)
     state=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{@claude_state}')
     if [ "$state" != working ]; then
@@ -224,7 +167,7 @@ end)
     [ -n "$TMUX_PANE" ] || exit 0
     logEvent "$(cat)" ended
     dismissNotification
-    setPane -u @claude_role \; set -p -t "$TMUX_PANE" -u @claude_state \; set -p -t "$TMUX_PANE" -u @claude_since \; set -p -t "$TMUX_PANE" -u @claude_activity \; set -p -t "$TMUX_PANE" -u @claude_waker_deadline \; set -p -t "$TMUX_PANE" -u @claude_session
+    setPane -u @claude_role \; set -p -t "$TMUX_PANE" -u @claude_state \; set -p -t "$TMUX_PANE" -u @claude_since \; set -p -t "$TMUX_PANE" -u @claude_activity \; set -p -t "$TMUX_PANE" -u @claude_waker_deadline
     ;;
 status)
     listSessions | awk -F'\t' '
@@ -285,18 +228,9 @@ rows)
     ;;
 preview)
     [ "$2" = - ] && exit 0
-    previewHeight=${FZF_PREVIEW_LINES:-40}
-    captureHeight=$previewHeight
-    note=$(threadNote "$2" | fold -s -w "${FZF_PREVIEW_COLUMNS:-80}")
-    if [ -n "$note" ]; then
-        printf '%s\n\n\n── live pane ──\n\n' "$note"
-        noteHeight=$(printf '%s\n' "$note" | wc -l)
-        captureHeight=$((previewHeight - noteHeight - NOTE_DIVIDER_LINES))
-        [ "$captureHeight" -lt "$MIN_CAPTURE_LINES" ] && captureHeight=$MIN_CAPTURE_LINES
-    fi
     "$TMUX_BIN" capture-pane -e -p -t "$2" |
         awk '{ lines[NR] = $0 } NF { last = NR } END { for (i = 1; i <= last; i++) print lines[i] }' |
-        tail -n "$captureHeight"
+        tail -n "${FZF_PREVIEW_LINES:-40}"
     ;;
 picker)
     scope=waiting
