@@ -5,11 +5,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/loadTmux.sh\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/load_tmux.sh\""
           },
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/checkDeps.sh\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/check_deps.sh\""
           }
         ]
       }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claudeWaiting.sh\" mark done"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claude_waiting.sh\" mark done"
           }
         ]
       }
@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claudeWaiting.sh\" mark permission"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claude_waiting.sh\" mark permission"
           }
         ]
       },
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claudeWaiting.sh\" mark question"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claude_waiting.sh\" mark question"
           }
         ]
       }
@@ -49,7 +49,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claudeWaiting.sh\" work"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claude_waiting.sh\" work"
           }
         ]
       }
@@ -59,7 +59,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claudeWaiting.sh\" work"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claude_waiting.sh\" work"
           }
         ]
       }
@@ -69,7 +69,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claudeWaiting.sh\" end"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/claude_waiting.sh\" end"
           }
         ]
       }
