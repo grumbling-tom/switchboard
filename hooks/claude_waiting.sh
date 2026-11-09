@@ -206,19 +206,34 @@ waiting)
 rows)
     # Groups: workers waiting on me, open orchestrators, (scope all) working or an
     # orchestrator's background job, then workers waiting on a background job.
-    # Header rows carry "-" as their pane id; the picker never selects them.
-    list_sessions | awk -F'\t' -v OFS='\t' -v scope="$2" '
+    # Header rows carry "-" as their pane id; the picker never selects them. Within a
+    # group: blocked before finished, unseen before seen, then stuck, then the rest.
+    theme=$("$TMUX_BIN" show -gv @switchboard_theme 2>/dev/null)
+    list_sessions | awk -F'\t' -v OFS='\t' -v scope="$2" -v theme="$theme" '
         function age(seconds,   minutes) {
             minutes = int(seconds / 60)
             return minutes < 60 ? minutes "m" : sprintf("%dh%02d", int(minutes / 60), minutes % 60)
         }
+        function lamp(state, is_seen,   blink) {
+            blink = is_seen ? "" : "\033[5m"
+            if (state == "permission" || state == "question") return "\033[1;38;2;255;74;46m" blink "◉\033[0m"
+            if (state == "done") return "\033[1;38;2;255;176;0m" blink "◉\033[0m"
+            if (state == "stuck") return "\033[38;2;138;127;110m◇\033[0m"
+            if (state == "working") return "\033[38;2;127;191;106m●\033[0m"
+            return "\033[38;2;176;141;87m○\033[0m"
+        }
+        function emoji(state) {
+            return state == "permission" ? "🔐" : state == "question" ? "❓" : state == "stuck" ? "🟠" : state == "working" ? "🟢" : state == "background" ? "🔄" : state == "scheduled" ? "⏰" : "✅"
+        }
         {
-            state = $1; role = $6
+            state = $1; role = $6; is_seen = ($8 == 1)
             if ((state == "background" || state == "scheduled") && role == "worker") group = 3
             else if (state == "working" || state == "background" || state == "scheduled") { if (scope == "waiting") next; group = 2 }
             else group = (role == "worker") ? 0 : 1
-            priority = (state == "permission" || state == "question") ? 0 : (state == "stuck" ? 1 : 2)
-            icon = state == "permission" ? "🔐" : state == "question" ? "❓" : state == "stuck" ? "🟠" : state == "working" ? "🟢" : state == "background" ? "🔄" : state == "scheduled" ? "⏰" : "✅"
+            if (state == "permission" || state == "question") priority = is_seen ? 1 : 0
+            else if (state == "done") priority = is_seen ? 3 : 2
+            else priority = (state == "stuck") ? 4 : 5
+            icon = (theme == "on") ? lamp(state, is_seen) : emoji(state)
             tag = (group == 2 && role == "worker") ? "⚙ " : ""
             line = sprintf("%s\t%s %5s  %-24.24s  %s  (%s)", $3, icon, age($2), tag $5, $7, $4)
             print group, priority, $2, line
@@ -228,16 +243,25 @@ rows)
             for (g in count) print g, -1, 0, "COUNT " count[g]
         }' |
         sort -t$'\t' -k1,1n -k2,2n -k3,3nr |
-        awk -F'\t' '
+        awk -F'\t' -v theme="$theme" '
             BEGIN {
-                title[0] = "⚙ WORKERS WAITING ON YOU"
-                title[1] = "💬 OPEN ORCHESTRATORS"
-                title[2] = "🟢 WORKING · 🔄 BACKGROUND JOB · ⏰ SCHEDULED"
-                title[3] = "🔄 WORKERS WAITING ON BACKGROUND TASKS"
+                if (theme == "on") {
+                    title[0] = "WORKERS WAITING ON YOU"
+                    title[1] = "OPEN ORCHESTRATORS"
+                    title[2] = "WORKING · BACKGROUND JOB · SCHEDULED"
+                    title[3] = "WORKERS WAITING ON BACKGROUND TASKS"
+                    header_style = "\033[1;38;2;216;183;124m"
+                } else {
+                    title[0] = "⚙ WORKERS WAITING ON YOU"
+                    title[1] = "💬 OPEN ORCHESTRATORS"
+                    title[2] = "🟢 WORKING · 🔄 BACKGROUND JOB · ⏰ SCHEDULED"
+                    title[3] = "🔄 WORKERS WAITING ON BACKGROUND TASKS"
+                    header_style = "\033[1m"
+                }
             }
             $2 == -1 {
                 sub(/^COUNT /, "", $4)
-                printf "-\t\033[1m── %s (%s) ──\033[0m\n", title[$1], $4
+                printf "-\t%s── %s (%s) ──\033[0m\n", header_style, title[$1], $4
                 next
             }
             { print $4 "\t" $5 }'
@@ -251,10 +275,14 @@ preview)
 picker)
     scope=waiting
     [ -n "$(bash "$0" rows waiting)" ] || scope=all
+    fzf_colors=()
+    if [ "$("$TMUX_BIN" show -gv @switchboard_theme 2>/dev/null)" = on ]; then
+        fzf_colors=(--color 'bg:#15100b,bg+:#3a2a1c,fg:#efe6d2,fg+:#efe6d2,hl:#ffb000,hl+:#ffb000,pointer:#ffb000,border:#4a3424,header:#a99c85,prompt:#b08d57,info:#a99c85,label:#d8b77c,preview-bg:#15100b,gutter:#15100b')
+    fi
     toggle_scope="if [ \"\$FZF_PROMPT\" = 'waiting> ' ]; then echo \"change-prompt(all> )+reload(bash $0 rows all)\"; else echo \"change-prompt(waiting> )+reload(bash $0 rows waiting)\"; fi"
     # shellcheck disable=SC2016 # fzf, not bash, expands $FZF_POS in the --bind actions
     selected=$(bash "$0" rows "$scope" |
-        fzf --ansi --delimiter=$'\t' --with-nth=2 --no-sort --layout=reverse \
+        fzf --ansi --delimiter=$'\t' --with-nth=2 --no-sort --layout=reverse "${fzf_colors[@]}" \
             --prompt "$scope> " --info=inline-right \
             --header 'enter jump · esc close · ctrl-a waiting/all · ctrl-r refresh preview' \
             --preview "bash $0 preview {1}" --preview-window 'right,60%,border-left' \

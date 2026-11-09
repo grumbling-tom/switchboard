@@ -3,8 +3,8 @@
 See which of your parallel Claude Code sessions in tmux are waiting on you, get a macOS
 notification when one is, and jump to it.
 
-- **Status bar:** counts of sessions working, in the background, stuck, and waiting on you.
-  Click the counts to open the picker.
+- **Status bar:** a lamp for every Claude session, after its window's name, and how many
+  are waiting on you. Click the count to open the picker.
 - **Pane borders:** each Claude pane shows whether it's waiting on you, and whether it's a
   worker or an orchestrator.
 - **Picker (`prefix + j`):** every session, waiting ones first, with a live preview of the
@@ -52,6 +52,29 @@ the status bar before the first Claude session starts.
 | `prefix + j` | Open the picker |
 | `prefix + r` | Mark the current pane as a worker or an orchestrator |
 | `prefix + t` | Set the current pane's label by hand |
+
+### Theme
+
+Switchboard also loads a theme, `tmux/switchboard_theme.tmux`, styled after a telephone
+operator's switchboard: a walnut status bar with brass trim, and a lamp for every Claude
+pane after its window's name, in pane order. The same lamp starts each pane's border
+title, and the picker uses the lamps and colours too.
+
+| Lamp | Means |
+|---|---|
+| Red `◉` | Blocked mid-turn: a permission prompt or a question |
+| Amber `◉` | Turn finished; your move |
+| Green `●` | Working |
+| Brass `○` | Waiting on a background job or a scheduled wakeup |
+| Dim `◇` | Stuck? Working, but no tool call for an hour |
+
+A red or amber lamp flashes until you visit that pane. In iTerm, flashing needs
+"Blinking text" turned on in the profile; without it, new and seen lamps look the same.
+The theme needs a terminal with 24-bit colour.
+
+To keep your own status bar and colours, create `~/.claude/switchboard-theme-off`. It
+takes effect when the next Claude session starts; to drop a theme that's already loaded,
+restart the tmux server or re-source your `~/.tmux.conf`.
 
 To open the picker with a single key such as Cmd+J, map that key in your terminal to send
 your tmux prefix followed by `j`.
