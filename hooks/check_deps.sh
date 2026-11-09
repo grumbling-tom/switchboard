@@ -13,8 +13,8 @@ command -v fzf >/dev/null || missing fzf "prefix + j won't open the picker" "bre
 
 # Without the Command Line Tools, /usr/bin/python3 is a stub that opens Apple's install
 # prompt, so check for the tools rather than running it.
-pythonPath=$(command -v python3)
-if [ -z "$pythonPath" ] || { [ "$pythonPath" = /usr/bin/python3 ] && ! xcode-select -p >/dev/null 2>&1; }; then
+python_path=$(command -v python3)
+if [ -z "$python_path" ] || { [ "$python_path" = /usr/bin/python3 ] && ! xcode-select -p >/dev/null 2>&1; }; then
     missing python3 "background jobs aren't detected, so a session waiting on one counts as waiting on you" "xcode-select --install"
 fi
 
