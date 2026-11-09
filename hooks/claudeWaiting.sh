@@ -11,15 +11,13 @@
 #   status        — tmux status-right: working / stuck / waiting counts
 #   picker        — click the counts, or prefix + j (in a tmux popup): fzf list of
 #                   sessions with a live preview of the selected pane
-# Notifications are skipped while ~/.claude/notify-off exists. Every state change is
-# appended to $EVENT_LOG, which claudeSessionStats.py reports on, with the pane's role:
-# @claude_role, seeded from CLAUDE_SESSION_ROLE (dispatch-ticket sets worker) or
-# orchestrator, and flipped by prefix + r.
+# Notifications are skipped while ~/.claude/notify-off exists. Each pane's role,
+# @claude_role, is seeded from CLAUDE_SESSION_ROLE (worker) or defaults to orchestrator,
+# and is flipped by prefix + r.
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 TMUX_BIN=$(command -v tmux || echo /opt/homebrew/bin/tmux)
 STUCK_AFTER_SECONDS=3600
-EVENT_LOG=~/.local/state/claude-sessions/events.tsv
 
 focusPane() {
     "$TMUX_BIN" switch-client -t "$1" \; select-window -t "$1" \; select-pane -t "$1"
@@ -52,16 +50,9 @@ updateLabel() {
     setPane @pane_label "$label"
 }
 
-logEvent() {
-    sessionId=$(jq -r '.session_id // empty' <<<"$1" 2>/dev/null)
-    label=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{?@pane_label,#{@pane_label},#{window_name}}')
+seedRole() {
     role=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{@claude_role}')
-    if [ -z "$role" ]; then
-        role=${CLAUDE_SESSION_ROLE:-orchestrator}
-        setPane @claude_role "$role"
-    fi
-    mkdir -p "$(dirname "$EVENT_LOG")"
-    printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$(date +%s)" "${sessionId:-$TMUX_PANE}" "$TMUX_PANE" "$2" "$label" "$role" >>"$EVENT_LOG"
+    [ -n "$role" ] || setPane @claude_role "${CLAUDE_SESSION_ROLE:-orchestrator}"
 }
 
 pendingWakers() {
@@ -112,7 +103,7 @@ mark)
         read -r wakerState wakerDeadline <<<"$(pendingWakers "$input")"
         if [ -n "$wakerState" ]; then
             setPane @claude_state "$wakerState" \; set -p -t "$TMUX_PANE" @claude_since "$(date +%s)" \; set -p -t "$TMUX_PANE" @claude_waker_deadline "$wakerDeadline"
-            logEvent "$input" "$wakerState"
+            seedRole
             dismissNotification
             exit 0
         fi
@@ -125,7 +116,7 @@ mark)
     [ -n "$message" ] || message="Waiting for your reply"
 
     setPane @claude_state "$reason" \; set -p -t "$TMUX_PANE" @claude_since "$(date +%s)"
-    logEvent "$input" "$reason"
+    seedRole
 
     [ -e ~/.claude/notify-off ] && exit 0
     isPaneVisible=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{&&:#{window_active},#{pane_active}}')
@@ -158,14 +149,13 @@ work)
     state=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{@claude_state}')
     if [ "$state" != working ]; then
         setPane @claude_state working \; set -p -t "$TMUX_PANE" @claude_since "$now"
-        logEvent "$input" working
+        seedRole
         dismissNotification
     fi
     setPane @claude_activity "$now"
     ;;
 end)
     [ -n "$TMUX_PANE" ] || exit 0
-    logEvent "$(cat)" ended
     dismissNotification
     setPane -u @claude_role \; set -p -t "$TMUX_PANE" -u @claude_state \; set -p -t "$TMUX_PANE" -u @claude_since \; set -p -t "$TMUX_PANE" -u @claude_activity \; set -p -t "$TMUX_PANE" -u @claude_waker_deadline
     ;;

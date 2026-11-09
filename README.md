@@ -64,8 +64,9 @@ your tmux prefix followed by `j`.
 
 ## State
 
-Switchboard logs every state change to `~/.local/state/claude-sessions/events.tsv`, which
-the stats read.
+Switchboard keeps its state in tmux pane options (`@claude_state`, `@claude_role` and
+the rest), so it disappears when the tmux server stops. The only file it writes is the
+filled-in tmux snippet, `~/.local/state/switchboard/switchboard.tmux`.
 
 ## Development
 
