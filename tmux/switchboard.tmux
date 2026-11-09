@@ -16,5 +16,5 @@ bind -n MouseDown1Status if -F '#{==:#{mouse_status_range},waiting}' "display-po
 # Unnamed windows running Claude show the folder: Claude reports its version as the command
 set -g automatic-rename-format '#{?pane_in_mode,[tmux],#{?#{m/r:^[0-9]+\.[0-9]+\.[0-9]+$,#{pane_current_command}},#{b:pane_current_path},#{pane_current_command}}}#{?pane_dead,[dead],}'
 
-# Flip the current Claude pane between worker and orchestrator for the session stats: prefix + r
+# Flip the current Claude pane between worker and orchestrator: prefix + r
 bind r if -F '#{==:#{@claude_role},worker}' 'set -p @claude_role orchestrator ; display-message "Claude role: orchestrator"' 'set -p @claude_role worker ; display-message "Claude role: worker"'

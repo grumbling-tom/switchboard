@@ -15,7 +15,7 @@ command -v fzf >/dev/null || missing fzf "prefix + j won't open the picker" "bre
 # prompt, so check for the tools rather than running it.
 pythonPath=$(command -v python3)
 if [ -z "$pythonPath" ] || { [ "$pythonPath" = /usr/bin/python3 ] && ! xcode-select -p >/dev/null 2>&1; }; then
-    missing python3 "background jobs aren't detected and the session stats can't run" "xcode-select --install"
+    missing python3 "background jobs aren't detected, so a session waiting on one counts as waiting on you" "xcode-select --install"
 fi
 
 if [ ! -e ~/.claude/notify-off ]; then

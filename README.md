@@ -11,7 +11,6 @@ notification when one is, and jump to it.
   pane. Enter jumps to it.
 - **Notifications:** when a session finishes, asks a question or needs permission, unless
   you're already looking at it. Clicking one takes you to the pane.
-- **Skill:** `claude-workflow-digest` reports how long sessions waited on you.
 
 macOS only.
 
@@ -25,7 +24,7 @@ never installs anything.
 | tmux | Everything | `brew install tmux` |
 | jq | Reading what each hook receives | `brew install jq` |
 | fzf | The picker | `brew install fzf` |
-| python3 | Background-job detection and session stats; macOS's own is fine | `xcode-select --install` |
+| python3 | Background-job detection; macOS's own is fine | `xcode-select --install` |
 | alerter | Clickable notifications | `brew install vjeantet/tap/alerter` |
 
 ## Install
@@ -51,7 +50,7 @@ the status bar before the first Claude session starts.
 | Key | Does |
 |---|---|
 | `prefix + j` | Open the picker |
-| `prefix + r` | Mark the current pane as a worker or an orchestrator, for the stats |
+| `prefix + r` | Mark the current pane as a worker or an orchestrator |
 | `prefix + t` | Set the current pane's label by hand |
 
 To open the picker with a single key such as Cmd+J, map that key in your terminal to send
