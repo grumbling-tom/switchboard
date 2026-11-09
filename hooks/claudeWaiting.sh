@@ -4,7 +4,7 @@
 #                   flag the pane as waiting and post a clickable alert. A finished turn
 #                   that left something to wake Claude (a background Bash job, Monitor,
 #                   agent or workflow, or a /loop wakeup or cron) is marked background
-#                   or scheduled instead, with no alert, until pendingWakers.py's
+#                   or scheduled instead, with no alert, until pending_wakers.py's
 #                   deadline passes
 #   work          — UserPromptSubmit / PostToolUse hooks: flag the pane as working
 #   end           — SessionEnd hook: forget the pane
@@ -66,7 +66,7 @@ logEvent() {
 
 pendingWakers() {
     transcript=$(jq -r '.transcript_path // empty' <<<"$1" 2>/dev/null)
-    [ -f "$transcript" ] && python3 -I "$SCRIPT_DIR/pendingWakers.py" "$transcript" 2>/dev/null
+    [ -f "$transcript" ] && python3 -I "$SCRIPT_DIR/pending_wakers.py" "$transcript" 2>/dev/null
 }
 
 reasonIcon() {

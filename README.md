@@ -67,3 +67,11 @@ your tmux prefix followed by `j`.
 
 Switchboard logs every state change to `~/.local/state/claude-sessions/events.tsv`, which
 the stats read.
+
+## Development
+
+Python follows snake_case and is formatted and linted with ruff:
+
+```
+uvx ruff format . && uvx ruff check .
+```
