@@ -6,6 +6,10 @@
     "name": "grumbling-tom",
     "url": "https://github.com/grumbling-tom"
   },
-  "license": "MIT",
-  "keywords": ["tmux", "notifications", "sessions", "macos"]
+  "keywords": [
+    "tmux",
+    "notifications",
+    "sessions",
+    "macos"
+  ]
 }
