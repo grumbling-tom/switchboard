@@ -70,8 +70,12 @@ the stats read.
 
 ## Development
 
-Python follows snake_case and is formatted and linted with ruff:
+Python follows snake_case and is formatted and linted with ruff. A pre-commit hook runs
+both on every commit; set it up once per clone:
 
 ```
-uvx ruff format . && uvx ruff check .
+uv tool install pre-commit
+pre-commit install
 ```
+
+To run it by hand: `pre-commit run --all-files`.
