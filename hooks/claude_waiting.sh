@@ -9,8 +9,12 @@
 #   work          — UserPromptSubmit / PostToolUse hooks: flag the pane as working
 #   end           — SessionEnd hook: forget the pane
 #   status        — tmux status-right: working / stuck / waiting counts
+#   waiting       — the theme's status-right: how many sessions wait on you; also keeps
+#                   the lamp flags (@switchboard_stuck, @switchboard_expired) current
 #   picker        — click the counts, or prefix + j (in a tmux popup): fzf list of
 #                   sessions with a live preview of the selected pane
+# A pane's @switchboard_seen is set when it gets focus, or when it starts waiting while
+# you're looking at it, so a lamp can flash until you've seen it.
 # Notifications are skipped while ~/.claude/notify-off exists. Each pane's role,
 # @claude_role, is seeded from CLAUDE_SESSION_ROLE (worker) or defaults to orchestrator,
 # and is flipped by prefix + r.
@@ -77,11 +81,11 @@ first_line() {
 }
 
 # One line per live Claude pane: state, seconds in that state, pane id, location,
-# window name, role, pane label. Claude reports its version as the pane's command, which
+# window name, role, pane label, seen, stored state, stuck flag, expired flag. Claude reports its version as the pane's command, which
 # drops panes whose Claude exited without a SessionEnd.
 list_sessions() {
     now=$(date +%s)
-    "$TMUX_BIN" list-panes -a -F $'#{?@claude_state,#{@claude_state},none}\t#{?@claude_since,#{@claude_since},0}\t#{?@claude_activity,#{@claude_activity},0}\t#{pane_current_command}\t#{pane_id}\t#{session_name}:#{window_index}.#{pane_index}\t#{window_name}\t#{?@claude_role,#{@claude_role},orchestrator}\t#{?@pane_label,#{@pane_label},#{pane_current_command}}\t#{?@claude_waker_deadline,#{@claude_waker_deadline},0}' |
+    "$TMUX_BIN" list-panes -a -F $'#{?@claude_state,#{@claude_state},none}\t#{?@claude_since,#{@claude_since},0}\t#{?@claude_activity,#{@claude_activity},0}\t#{pane_current_command}\t#{pane_id}\t#{session_name}:#{window_index}.#{pane_index}\t#{window_name}\t#{?@claude_role,#{@claude_role},orchestrator}\t#{?@pane_label,#{@pane_label},#{pane_current_command}}\t#{?@claude_waker_deadline,#{@claude_waker_deadline},0}\t#{?@switchboard_seen,1,0}\t#{?@switchboard_stuck,1,0}\t#{?@switchboard_expired,1,0}' |
         awk -F'\t' -v OFS='\t' -v now="$now" -v stuck_after="$STUCK_AFTER_SECONDS" '
             $1 == "none" { next }
             $4 !~ /^(claude|[0-9]+\.[0-9]+\.[0-9]+)$/ { next }
@@ -89,7 +93,7 @@ list_sessions() {
                 state = $1
                 if (state == "working" && now - $3 > stuck_after) state = "stuck"
                 if ((state == "background" || state == "scheduled") && $10 > 0 && now > $10) state = "done"
-                print state, now - $2, $5, $6, $7, $8, $9
+                print state, now - $2, $5, $6, $7, $8, $9, $11, $1, $12, $13
             }'
 }
 
@@ -102,7 +106,7 @@ mark)
     if [ "$reason" = "done" ]; then
         read -r waker_state waker_deadline <<<"$(pending_wakers "$input")"
         if [ -n "$waker_state" ]; then
-            set_pane @claude_state "$waker_state" \; set -p -t "$TMUX_PANE" @claude_since "$(date +%s)" \; set -p -t "$TMUX_PANE" @claude_waker_deadline "$waker_deadline"
+            set_pane @claude_state "$waker_state" \; set -p -t "$TMUX_PANE" @claude_since "$(date +%s)" \; set -p -t "$TMUX_PANE" @claude_waker_deadline "$waker_deadline" \; set -p -t "$TMUX_PANE" -u @switchboard_stuck \; set -p -t "$TMUX_PANE" -u @switchboard_expired
             seed_role
             dismiss_notification
             exit 0
@@ -115,13 +119,17 @@ mark)
     fi
     [ -n "$message" ] || message="Waiting for your reply"
 
-    set_pane @claude_state "$reason" \; set -p -t "$TMUX_PANE" @claude_since "$(date +%s)"
+    set_pane @claude_state "$reason" \; set -p -t "$TMUX_PANE" @claude_since "$(date +%s)" \; set -p -t "$TMUX_PANE" -u @switchboard_stuck \; set -p -t "$TMUX_PANE" -u @switchboard_expired
     seed_role
 
-    [ -e ~/.claude/notify-off ] && exit 0
     is_pane_visible=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{&&:#{window_active},#{pane_active}}')
     front_app=$(lsappinfo info -only name "$(lsappinfo front)" | cut -d'"' -f4)
-    [ "$is_pane_visible" = 1 ] && [ "$front_app" = iTerm2 ] && exit 0
+    if [ "$is_pane_visible" = 1 ] && [ "$front_app" = iTerm2 ]; then
+        set_pane @switchboard_seen 1
+        exit 0
+    fi
+    set_pane -u @switchboard_seen
+    [ -e ~/.claude/notify-off ] && exit 0
 
     window_name=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{window_name}')
     sound_args=()
@@ -148,16 +156,16 @@ work)
     now=$(date +%s)
     state=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{@claude_state}')
     if [ "$state" != working ]; then
-        set_pane @claude_state working \; set -p -t "$TMUX_PANE" @claude_since "$now"
+        set_pane @claude_state working \; set -p -t "$TMUX_PANE" @claude_since "$now" \; set -p -t "$TMUX_PANE" -u @switchboard_expired
         seed_role
         dismiss_notification
     fi
-    set_pane @claude_activity "$now"
+    set_pane @claude_activity "$now" \; set -p -t "$TMUX_PANE" -u @switchboard_stuck
     ;;
 end)
     [ -n "$TMUX_PANE" ] || exit 0
     dismiss_notification
-    set_pane -u @claude_role \; set -p -t "$TMUX_PANE" -u @claude_state \; set -p -t "$TMUX_PANE" -u @claude_since \; set -p -t "$TMUX_PANE" -u @claude_activity \; set -p -t "$TMUX_PANE" -u @claude_waker_deadline
+    set_pane -u @claude_role \; set -p -t "$TMUX_PANE" -u @claude_state \; set -p -t "$TMUX_PANE" -u @claude_since \; set -p -t "$TMUX_PANE" -u @claude_activity \; set -p -t "$TMUX_PANE" -u @claude_waker_deadline \; set -p -t "$TMUX_PANE" -u @switchboard_seen \; set -p -t "$TMUX_PANE" -u @switchboard_stuck \; set -p -t "$TMUX_PANE" -u @switchboard_expired
     ;;
 status)
     list_sessions | awk -F'\t' '
@@ -176,6 +184,24 @@ status)
             if (orchestrators_open) printf "💬 %d open ", orchestrators_open
             printf "#[default]"
         }'
+    ;;
+waiting)
+    sessions=$(list_sessions)
+    flag_commands=()
+    while IFS=$'\t' read -r state _ pane _ _ _ _ _ stored_state is_stuck is_expired; do
+        [ -n "$pane" ] || continue
+        if [ "$state" = stuck ] && [ "$is_stuck" = 0 ]; then
+            flag_commands+=(set -p -t "$pane" @switchboard_stuck 1 \;)
+        elif [ "$state" != stuck ] && [ "$is_stuck" = 1 ]; then
+            flag_commands+=(set -p -t "$pane" -u @switchboard_stuck \;)
+        fi
+        if [ "$state" = "done" ] && [ "$stored_state" != "done" ] && [ "$is_expired" = 0 ]; then
+            flag_commands+=(set -p -t "$pane" @switchboard_expired 1 \; set -p -t "$pane" -u @switchboard_seen \;)
+        fi
+    done <<<"$sessions"
+    [ ${#flag_commands[@]} -eq 0 ] || "$TMUX_BIN" "${flag_commands[@]}"
+    count=$(awk -F'\t' '$1 == "permission" || $1 == "question" || $1 == "done"' <<<"$sessions" | wc -l | tr -d ' ')
+    [ "$count" -eq 0 ] || printf '#[fg=#b08d57]◎ #[fg=#efe6d2]%s waiting ' "$count"
     ;;
 rows)
     # Groups: workers waiting on me, open orchestrators, (scope all) working or an

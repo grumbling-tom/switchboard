@@ -13,6 +13,10 @@ set -g status-right '#[range=user|waiting]#(@SWITCHBOARD_ROOT@/hooks/claude_wait
 bind j display-popup -E -w 90% -h 80% -T ' Claude sessions ' '@SWITCHBOARD_ROOT@/hooks/claude_waiting.sh picker'
 bind -n MouseDown1Status if -F '#{==:#{mouse_status_range},waiting}' "display-popup -E -w 90% -h 80% -T ' Claude sessions ' '@SWITCHBOARD_ROOT@/hooks/claude_waiting.sh picker'" 'switch-client -t ='
 
+# A pane that gets focus has been seen, so its lamp stops flashing
+set -g focus-events on
+set-hook -g pane-focus-in 'set -p @switchboard_seen 1'
+
 # Unnamed windows running Claude show the folder: Claude reports its version as the command
 set -g automatic-rename-format '#{?pane_in_mode,[tmux],#{?#{m/r:^[0-9]+\.[0-9]+\.[0-9]+$,#{pane_current_command}},#{b:pane_current_path},#{pane_current_command}}}#{?pane_dead,[dead],}'
 
