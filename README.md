@@ -70,8 +70,11 @@ filled-in tmux snippet, `~/.local/state/switchboard/switchboard.tmux`.
 
 ## Development
 
-Python follows snake_case and is formatted and linted with ruff. A pre-commit hook runs
-both on every commit; set it up once per clone:
+Python and shell scripts both use snake_case for file, function and variable names;
+constants and environment variables are UPPER_SNAKE_CASE. A pre-commit hook checks every
+commit: ruff lints and formats Python, shellcheck lints and shfmt formats shell, and
+`scripts/check_shell_names.sh` checks shell file and function names. Set it up once per
+clone:
 
 ```
 uv tool install pre-commit

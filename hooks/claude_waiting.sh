@@ -99,7 +99,7 @@ mark)
     reason=${2:-done}
     input=$(cat)
     update_label "$input"
-    if [ "$reason" = done ]; then
+    if [ "$reason" = "done" ]; then
         read -r waker_state waker_deadline <<<"$(pending_wakers "$input")"
         if [ -n "$waker_state" ]; then
             set_pane @claude_state "$waker_state" \; set -p -t "$TMUX_PANE" @claude_since "$(date +%s)" \; set -p -t "$TMUX_PANE" @claude_waker_deadline "$waker_deadline"
@@ -108,7 +108,7 @@ mark)
             exit 0
         fi
     fi
-    if [ "$reason" = done ]; then
+    if [ "$reason" = "done" ]; then
         message=$(jq -r '.last_assistant_message // empty' <<<"$input" 2>/dev/null | first_line)
     else
         message=$(jq -r '.message // empty' <<<"$input" 2>/dev/null | first_line)
@@ -226,6 +226,7 @@ picker)
     scope=waiting
     [ -n "$(bash "$0" rows waiting)" ] || scope=all
     toggle_scope="if [ \"\$FZF_PROMPT\" = 'waiting> ' ]; then echo \"change-prompt(all> )+reload(bash $0 rows all)\"; else echo \"change-prompt(waiting> )+reload(bash $0 rows waiting)\"; fi"
+    # shellcheck disable=SC2016 # fzf, not bash, expands $FZF_POS in the --bind actions
     selected=$(bash "$0" rows "$scope" |
         fzf --ansi --delimiter=$'\t' --with-nth=2 --no-sort --layout=reverse \
             --prompt "$scope> " --info=inline-right \

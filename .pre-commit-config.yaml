@@ -5,3 +5,19 @@ repos:
       - id: ruff-check
         args: [--fix]
       - id: ruff-format
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+  - repo: https://github.com/MaxWinterstein/shfmt-py
+    rev: v4.2.0
+    hooks:
+      - id: shfmt
+        args: [-i, "4", -w]
+  - repo: local
+    hooks:
+      - id: shell-names
+        name: shell names are lower_snake_case
+        entry: scripts/check_shell_names.sh
+        language: script
+        types: [shell]
