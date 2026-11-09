@@ -1,0 +1,13 @@
+{
+  "name": "switchboard",
+  "owner": {
+    "name": "grumbling-tom"
+  },
+  "plugins": [
+    {
+      "name": "switchboard",
+      "source": "./",
+      "description": "See which of your parallel Claude Code sessions in tmux are waiting on you, get a macOS notification when one is, and jump to it from a picker."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "switchboard",
+  "version": "0.1.0",
+  "description": "See which of your parallel Claude Code sessions in tmux are waiting on you, get a macOS notification when one is, and jump to it from a picker.",
+  "author": {
+    "name": "grumbling-tom",
+    "url": "https://github.com/grumbling-tom"
+  },
+  "license": "MIT",
+  "keywords": ["tmux", "notifications", "sessions", "macos"]
+}
