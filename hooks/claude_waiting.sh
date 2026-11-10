@@ -7,6 +7,7 @@
 #                   or scheduled instead, with no alert, until pending_wakers.py's
 #                   deadline passes
 #   work          — UserPromptSubmit / PostToolUse hooks: flag the pane as working
+#   start         — SessionStart hook: clear whatever an earlier session left on the pane
 #   end           — SessionEnd hook: forget the pane
 #   status        — tmux status-right: working / stuck / waiting counts
 #   waiting       — the theme's status-right: how many sessions wait on you; also keeps
@@ -162,7 +163,7 @@ work)
     fi
     set_pane @claude_activity "$now" \; set -p -t "$TMUX_PANE" -u @switchboard_stuck
     ;;
-end)
+start | end)
     [ -n "$TMUX_PANE" ] || exit 0
     dismiss_notification
     set_pane -u @claude_role \; set -p -t "$TMUX_PANE" -u @claude_state \; set -p -t "$TMUX_PANE" -u @claude_since \; set -p -t "$TMUX_PANE" -u @claude_activity \; set -p -t "$TMUX_PANE" -u @claude_waker_deadline \; set -p -t "$TMUX_PANE" -u @switchboard_seen \; set -p -t "$TMUX_PANE" -u @switchboard_stuck \; set -p -t "$TMUX_PANE" -u @switchboard_expired
