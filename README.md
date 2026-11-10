@@ -68,8 +68,11 @@ title, and the picker uses the lamps and colours too.
 | Brass `○` | Waiting on a background job or a scheduled wakeup |
 | Dim `◇` | Stuck? Working, but no tool call for an hour |
 
-A red or amber lamp flashes until you visit that pane. In iTerm, flashing needs
-"Blinking text" turned on in the profile; without it, new and seen lamps look the same.
+A red or amber lamp flashes until you visit that pane, but only if your terminal draws
+blinking text. **iTerm2 doesn't by default:** to see lamps flash, turn on Settings →
+Profiles → Text → **Blinking text** for the profile you use. It takes effect at once.
+Without it the lamps still change colour, but a lamp that has just lit looks the same as
+one you've already seen.
 The theme needs a terminal with 24-bit colour.
 
 To keep your own status bar and colours, create `~/.claude/switchboard-theme-off`. It
