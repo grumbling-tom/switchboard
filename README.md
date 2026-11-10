@@ -57,8 +57,10 @@ the status bar before the first Claude session starts.
 
 Switchboard also loads a theme, `tmux/switchboard_theme.tmux`, styled after a telephone
 operator's switchboard: a walnut status bar with brass trim, and a lamp for every Claude
-pane after its window's name, in pane order. The same lamp starts each pane's border
-title, and the picker uses the lamps and colours too.
+pane after its window's name. The same lamp starts each pane's border title, and the
+picker uses the lamps and colours too. A window's lamps follow the order its panes were
+opened in, which can differ from their positions after a split; the border shows which
+lamp is which.
 
 | Lamp | Means |
 |---|---|
@@ -68,11 +70,10 @@ title, and the picker uses the lamps and colours too.
 | Brass `○` | Waiting on a background job or a scheduled wakeup |
 | Dim `◇` | Stuck? Working, but no tool call for an hour |
 
-A red or amber lamp flashes until you visit that pane, but only if your terminal draws
-blinking text. **iTerm2 doesn't by default:** to see lamps flash, turn on Settings →
-Profiles → Text → **Blinking text** for the profile you use. It takes effect at once.
-Without it the lamps still change colour, but a lamp that has just lit looks the same as
-one you've already seen.
+A red or amber lamp in the status bar pulses slowly, bright to dim and back over eight
+seconds, until you visit that pane; after that it stays steady. The pulse needs the status
+bar to redraw every second, so the theme sets `status-interval` to 1. Lamps on pane
+borders and in the picker don't pulse.
 The theme needs a terminal with 24-bit colour.
 
 To keep your own status bar and colours, create `~/.claude/switchboard-theme-off`. It

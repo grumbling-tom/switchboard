@@ -214,10 +214,9 @@ rows)
             minutes = int(seconds / 60)
             return minutes < 60 ? minutes "m" : sprintf("%dh%02d", int(minutes / 60), minutes % 60)
         }
-        function lamp(state, is_seen,   blink) {
-            blink = is_seen ? "" : "\033[5m"
-            if (state == "permission" || state == "question") return "\033[1;38;2;255;74;46m" blink "◉\033[0m"
-            if (state == "done") return "\033[1;38;2;255;176;0m" blink "◉\033[0m"
+        function lamp(state) {
+            if (state == "permission" || state == "question") return "\033[1;38;2;255;74;46m◉\033[0m"
+            if (state == "done") return "\033[1;38;2;255;176;0m◉\033[0m"
             if (state == "stuck") return "\033[38;2;138;127;110m◇\033[0m"
             if (state == "working") return "\033[38;2;127;191;106m●\033[0m"
             return "\033[38;2;176;141;87m○\033[0m"
@@ -233,7 +232,7 @@ rows)
             if (state == "permission" || state == "question") priority = is_seen ? 1 : 0
             else if (state == "done") priority = is_seen ? 3 : 2
             else priority = (state == "stuck") ? 4 : 5
-            icon = (theme == "on") ? lamp(state, is_seen) : emoji(state)
+            icon = (theme == "on") ? lamp(state) : emoji(state)
             tag = (group == 2 && role == "worker") ? "⚙ " : ""
             line = sprintf("%s\t%s %5s  %-24.24s  %s  (%s)", $3, icon, age($2), tag $5, $7, $4)
             print group, priority, $2, line
