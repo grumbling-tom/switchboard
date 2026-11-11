@@ -44,7 +44,8 @@ Or try it for one session without installing: `claude --plugin-dir ~/code/switch
 
 When a Claude session starts inside tmux, switchboard loads its tmux lines into that tmux
 server: `status-right`, `pane-border-status` and `pane-border-format`,
-`automatic-rename-format`, and the `prefix + j`, `prefix + r` and `prefix + t` bindings.
+`automatic-rename-format`, the `hyperlinks` terminal feature, and the `prefix + j`,
+`prefix + r` and `prefix + t` bindings.
 They replace your own values for those options. The filled-in file is written to
 `~/.local/state/switchboard/switchboard.tmux`; source it from `~/.tmux.conf` if you want
 the status bar before the first Claude session starts.
