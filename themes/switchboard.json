@@ -1,0 +1,12 @@
+{
+  "name": "Switchboard",
+  "base": "dark",
+  "overrides": {
+    "diffAdded": "#395630",
+    "diffAddedDimmed": "#43533e",
+    "diffAddedWord": "#5f8f50",
+    "diffRemoved": "#7c2e1e",
+    "diffRemovedDimmed": "#6b443c",
+    "diffRemovedWord": "#ae3924"
+  }
+}

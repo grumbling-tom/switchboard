@@ -81,6 +81,10 @@ bar to redraw every second, so the theme sets `status-interval` to 1. Lamps on p
 borders and in the picker don't pulse.
 The theme needs a terminal with 24-bit colour.
 
+For Claude's own diffs, pick **Switchboard** in `/theme`. It's Claude Code's dark theme
+with only the diff colours changed: darker shades of the lamps' green and red, so text on
+them stays readable.
+
 To keep your own status bar and colours, create `~/.claude/switchboard-theme-off`. It
 takes effect when the next Claude session starts; to drop a theme that's already loaded,
 restart the tmux server or re-source your `~/.tmux.conf`.
