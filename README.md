@@ -11,6 +11,8 @@ notification when one is, and jump to it.
   pane. Enter jumps to it.
 - **Notifications:** when a session finishes, asks a question or needs permission, unless
   you're already looking at it. Clicking one takes you to the pane.
+- **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
+  each with a recommended answer, until nothing is left assumed.
 
 macOS only.
 
