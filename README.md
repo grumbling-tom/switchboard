@@ -11,6 +11,8 @@ notification when one is, and jump to it.
   pane. Enter jumps to it.
 - **Notifications:** when a session finishes, asks a question or needs permission, unless
   you're already looking at it. Clicking one takes you to the pane.
+- **Links to code:** Claude writes each reference to code as a link that opens the file
+  at that line in VS Code.
 - **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
   each with a recommended answer, until nothing is left assumed.
 
@@ -89,6 +91,9 @@ your tmux prefix followed by `j`.
 ## Settings
 
 - Notifications are off while `~/.claude/notify-off` exists.
+- Links to code are off while `~/.claude/switchboard-vscode-links-off` exists. They need
+  a terminal that supports clickable links, such as iTerm2; inside tmux, switchboard
+  turns on tmux's `hyperlinks` terminal feature so they pass through.
 - A pane started with `CLAUDE_SESSION_ROLE=worker` counts as a worker; everything else is
   an orchestrator until you press `prefix + r`.
 
