@@ -13,6 +13,8 @@ notification when one is, and jump to it.
   you're already looking at it. Clicking one takes you to the pane.
 - **Links to code:** Claude writes each reference to code as a link that opens the file
   at that line in VS Code.
+- **Links to tickets:** Claude writes each reference to a Linear or Jira ticket or
+  project as a link titled with its name, so a click opens it.
 - **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
   each with a recommended answer, until nothing is left assumed.
 
@@ -98,6 +100,8 @@ your tmux prefix followed by `j`.
 - Links to code are off while `~/.claude/switchboard-vscode-links-off` exists. They need
   a terminal that supports clickable links, such as iTerm2; inside tmux, switchboard
   turns on tmux's `hyperlinks` terminal feature so they pass through.
+- Links to tickets are off while `~/.claude/switchboard-ticket-links-off` exists. They
+  need the same clickable-link support.
 - A pane started with `CLAUDE_SESSION_ROLE=worker` counts as a worker; everything else is
   an orchestrator until you press `prefix + r`.
 
