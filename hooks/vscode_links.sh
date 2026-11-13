@@ -1,8 +1,7 @@
 #!/bin/bash
 # SessionStart hook: tells Claude to write references to code as VS Code links, so a
-# click opens the file at that line. Off while ~/.claude/switchboard-vscode-links-off
-# exists.
-[ -e ~/.claude/switchboard-vscode-links-off ] && exit 0
+# click opens the file at that line. Off when the plugin's `code_links` setting is off.
+[ "${CLAUDE_PLUGIN_OPTION_CODE_LINKS:-vscode}" = vscode ] || exit 0
 
 read -r -d '' rule <<'EOF'
 Write each reference to code as a Markdown link that opens it in VS Code, not a bare

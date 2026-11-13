@@ -1,6 +1,6 @@
 {
   "name": "switchboard",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "See which of your parallel Claude Code sessions in tmux are waiting on you, get a macOS notification when one is, and jump to it from a picker.",
   "author": {
     "name": "grumbling-tom",
@@ -11,5 +11,57 @@
     "notifications",
     "sessions",
     "macos"
-  ]
+  ],
+  "userConfig": {
+    "notifications": {
+      "type": "boolean",
+      "title": "Notifications",
+      "description": "Post a macOS notification when a session waits on you and you are not looking at it.",
+      "default": true
+    },
+    "theme": {
+      "type": "boolean",
+      "title": "Theme",
+      "description": "Load the walnut-and-brass tmux theme. Off keeps your own status bar and colours.",
+      "default": true
+    },
+    "code_links": {
+      "type": "string",
+      "title": "Links to code",
+      "description": "Have Claude write references to code as links that open the file at that line.",
+      "default": "vscode",
+      "options": [
+        "vscode",
+        "off"
+      ]
+    },
+    "ticket_links": {
+      "type": "boolean",
+      "title": "Links to tickets",
+      "description": "Have Claude write references to tracker tickets and projects as links titled with their name.",
+      "default": true
+    },
+    "terminal_app": {
+      "type": "string",
+      "title": "Terminal app",
+      "description": "The macOS app that runs tmux, as the Dock names it. Used to tell whether you are looking at a pane, and to bring it forward when you click a notification.",
+      "default": "iTerm2"
+    },
+    "tracker": {
+      "type": "string",
+      "title": "Tracker",
+      "description": "Where /switchboard:shape-tickets stores tickets: as files kept by the plugin, or in Linear.",
+      "default": "local",
+      "options": [
+        "local",
+        "linear"
+      ]
+    },
+    "linear_team": {
+      "type": "string",
+      "title": "Linear team",
+      "description": "The Linear team key tickets go to, such as ENG. Only used when Tracker is linear.",
+      "default": ""
+    }
+  }
 }

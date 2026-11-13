@@ -18,7 +18,7 @@ if [ -z "$python_path" ] || { [ "$python_path" = /usr/bin/python3 ] && ! xcode-s
     missing python3 "background jobs aren't detected, so a session waiting on one counts as waiting on you" "xcode-select --install"
 fi
 
-if [ ! -e ~/.claude/notify-off ]; then
+if [ "${CLAUDE_PLUGIN_OPTION_NOTIFICATIONS:-true}" = true ]; then
     command -v alerter >/dev/null || missing alerter "you get no notification when a session waits on you" "brew install vjeantet/tap/alerter"
 fi
 

@@ -16,13 +16,17 @@
 #                   sessions with a live preview of the selected pane
 # A pane's @switchboard_seen is set when it gets focus, or when it starts waiting while
 # you're looking at it, so a lamp can flash until you've seen it.
-# Notifications are skipped while ~/.claude/notify-off exists. Each pane's role,
+# Notifications are skipped when the plugin's `notifications` setting is off, and "looking
+# at it" means the pane is active in the `terminal_app` setting's app. Each pane's role,
 # @claude_role, is seeded from CLAUDE_SESSION_ROLE (worker) or defaults to orchestrator,
 # and is flipped by prefix + r.
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 TMUX_BIN=$(command -v tmux || echo /opt/homebrew/bin/tmux)
 STUCK_AFTER_SECONDS=3600
+# Plugin settings reach hook processes only; tmux's own calls (status, picker) never read these.
+TERMINAL_APP=${CLAUDE_PLUGIN_OPTION_TERMINAL_APP:-iTerm2}
+NOTIFICATIONS=${CLAUDE_PLUGIN_OPTION_NOTIFICATIONS:-true}
 
 focus_pane() {
     "$TMUX_BIN" switch-client -t "$1" \; select-window -t "$1" \; select-pane -t "$1"
@@ -125,12 +129,12 @@ mark)
 
     is_pane_visible=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{&&:#{window_active},#{pane_active}}')
     front_app=$(lsappinfo info -only name "$(lsappinfo front)" | cut -d'"' -f4)
-    if [ "$is_pane_visible" = 1 ] && [ "$front_app" = iTerm2 ]; then
+    if [ "$is_pane_visible" = 1 ] && [ "$front_app" = "$TERMINAL_APP" ]; then
         set_pane @switchboard_seen 1
         exit 0
     fi
     set_pane -u @switchboard_seen
-    [ -e ~/.claude/notify-off ] && exit 0
+    [ "$NOTIFICATIONS" = true ] || exit 0
 
     window_name=$("$TMUX_BIN" display -p -t "$TMUX_PANE" '#{window_name}')
     sound_args=()
@@ -142,7 +146,7 @@ mark)
             --group "claude-$pane" "${sound_args[@]}")
         case "$result" in
         @CONTENTCLICKED | @ACTIONCLICKED)
-            open -a iTerm
+            open -a "$TERMINAL_APP"
             focus_pane "$pane"
             ;;
         esac

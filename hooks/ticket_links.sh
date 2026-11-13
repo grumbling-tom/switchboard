@@ -1,8 +1,8 @@
 #!/bin/bash
 # SessionStart hook: tells Claude to write references to tickets and projects in a task
 # tracker (Linear, Jira and the like) as links titled with their name, so a click opens
-# them. Off while ~/.claude/switchboard-ticket-links-off exists.
-[ -e ~/.claude/switchboard-ticket-links-off ] && exit 0
+# them. Off when the plugin's `ticket_links` setting is off.
+[ "${CLAUDE_PLUGIN_OPTION_TICKET_LINKS:-true}" = true ] || exit 0
 
 read -r -d '' rule <<'EOF'
 Write each reference to a ticket, issue or project in a task tracker (Linear, Jira and

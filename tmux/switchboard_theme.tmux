@@ -1,5 +1,5 @@
 # Switchboard's look: walnut and brass, with a lamp for every Claude pane. hooks/load_tmux.sh
-# loads it after switchboard.tmux unless ~/.claude/switchboard-theme-off exists.
+# loads it after switchboard.tmux while the plugin's `theme` setting is on.
 
 set -g @switchboard_theme on
 set -s terminal-features[90] '*:RGB'

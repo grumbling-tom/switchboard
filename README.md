@@ -94,23 +94,34 @@ For Claude's own diffs, pick **Switchboard** in `/theme`. It's Claude Code's dar
 with only the diff colours changed: darker shades of the lamps' green and red, so text on
 them stays readable.
 
-To keep your own status bar and colours, create `~/.claude/switchboard-theme-off`. It
-takes effect when the next Claude session starts; to drop a theme that's already loaded,
-restart the tmux server or re-source your `~/.tmux.conf`.
+To keep your own status bar and colours, turn the **Theme** setting off (see
+[Settings](#settings)). It takes effect when the next Claude session starts; to drop a
+theme that's already loaded, restart the tmux server or re-source your `~/.tmux.conf`.
 
 To open the picker with a single key such as Cmd+J, map that key in your terminal to send
 your tmux prefix followed by `j`.
 
 ## Settings
 
-- Notifications are off while `~/.claude/notify-off` exists.
-- Links to code are off while `~/.claude/switchboard-vscode-links-off` exists. They need
-  a terminal that supports clickable links, such as iTerm2; inside tmux, switchboard
-  turns on tmux's `hyperlinks` terminal feature so they pass through.
-- Links to tickets are off while `~/.claude/switchboard-ticket-links-off` exists. They
-  need the same clickable-link support.
-- A pane started with `CLAUDE_SESSION_ROLE=worker` counts as a worker; everything else is
-  an orchestrator until you press `prefix + r`.
+Claude Code asks for these when you install or enable the plugin. Change them later with
+`/plugin configure switchboard@switchboard`, or in `/config`. They apply from the next
+session.
+
+| Setting | Default | Does |
+|---|---|---|
+| Notifications | on | Post a notification when a session waits on you and you aren't looking at it |
+| Theme | on | Load the walnut-and-brass tmux theme |
+| Links to code | `vscode` | Have Claude link code references so they open in VS Code; `off` to stop |
+| Links to tickets | on | Have Claude link ticket and project references, titled with their name |
+| Terminal app | `iTerm2` | The app that runs tmux, as the Dock names it: how switchboard tells you're looking at a pane, and what a notification click brings forward |
+| Tracker | `local` | Where `/switchboard:shape-tickets` stores tickets |
+| Linear team | (none) | The team key tickets go to, when Tracker is `linear` |
+
+Links need a terminal that supports clickable links, such as iTerm2; inside tmux,
+switchboard turns on tmux's `hyperlinks` terminal feature so they pass through.
+
+A pane started with `CLAUDE_SESSION_ROLE=worker` counts as a worker; everything else is
+an orchestrator until you press `prefix + r`.
 
 ## State
 
