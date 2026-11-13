@@ -10,4 +10,4 @@ Run this with the Bash tool, exactly as written:
 "${CLAUDE_SKILL_DIR}/branch_pane.sh"
 ```
 
-Then reply with its output in one line, and nothing else. If it fails, show the error.
+Then reply with its output as a single line. If it fails, show the error.
