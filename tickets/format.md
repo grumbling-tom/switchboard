@@ -12,6 +12,19 @@ gives its path.
   T2-<ticket-slug>.md
 ```
 
+## The AI-generated callout
+
+Everything shape-tickets writes for people to read starts with this callout: `map.md`,
+and so the section it becomes on the project, and every ticket body.
+
+```
+> [!WARNING]
+> AI generated, proceed with caution.
+```
+
+It tells readers a person still has to amend or rewrite what follows. The callout is
+theirs to remove once they have; the skill writes it every time and removes it never.
+
 ## One place for each body
 
 **A ticket's `url` says where its body lives.** While `url` is empty, the body is the
@@ -56,6 +69,9 @@ url = ""                   # set by `create`
 ## map.md
 
 ```
+> [!WARNING]
+> AI generated, proceed with caution.
+
 # <title>
 
 ## Where the change goes
@@ -76,8 +92,8 @@ under **Not decided yet**, with its proposal and the ticket it blocks.
 
 ## Ticket bodies
 
-`T<n>-<ticket-slug>.md` holds the body the store gets: Requirement, Context, and
-Acceptance Criteria as testable `- [ ]` items. It is plain Markdown. Context carries the
+`T<n>-<ticket-slug>.md` holds the body the store gets: the AI-generated callout, then
+Requirement, Context, and Acceptance Criteria as testable `- [ ]` items. It is plain Markdown. Context carries the
 snippets and diagram slices from `map.md` that this ticket implements, as `writing.md`
 describes.
 
@@ -91,9 +107,9 @@ ticket's key, which exists by then. It names a later ticket by its title.
    body: `Stack: layer 2 of 2, builds on <key of the layer below>`. Pass the keys of the
    ticket's `after` as its blockers. Write its `key` and `url` into `tickets.toml`, and set
    `status = "storing"` after the first.
-2. **Deliver the map** with the store's `deliver`: map.md with keys in place of ids,
-   Delivery's numbered list linking each key, and the chain redrawn so its box edges and
-   arrows line up around the longer keys. Set `project_url`.
+2. **Deliver the map** with the store's `deliver`: map.md, callout first, with keys in
+   place of ids, Delivery's numbered list linking each key, and the chain redrawn so its
+   box edges and arrows line up around the longer keys. Set `project_url`.
 3. **Finish.** Set `status = "stored"`, then tell the user the next step:
    `The chain is stored. Next, type /switchboard:plan-ticket <key>.` Name the first ticket
    with an empty `after`, and any others that can start alongside it.

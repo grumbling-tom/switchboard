@@ -56,7 +56,8 @@ Done when the user says to store the tickets.
 ## 4. Write the chain
 
 Write the chain folder as `format.md` describes, with `status = "agreed"`: `tickets.toml`,
-`map.md` written as `writing.md` describes, and one body file per ticket. Settled
+`map.md` written as `writing.md` describes, and one body file per ticket, `map.md` and
+every body opening with the AI-generated callout. Settled
 decisions go under Decided; open ones stay under Not decided yet.
 
 Done when every ticket has a table and a body file, every `after` names an earlier id,

@@ -22,15 +22,15 @@ Before the first ticket: when `source` isn't a Linear project, create one in the
 after the chain's title, and set `source` to it.
 
 1. **Skip what's already stored.** List the issues in the project (else the team),
-   archived ones included, with their descriptions. An issue whose description starts
-   with the line `switchboard: <slug>/T3` is this ticket from an earlier run: record its
-   identifier and url and go on to the next ticket. Match that line yourself, since the
-   list's `query` is a fuzzy word search.
+   archived ones included, with their descriptions. An issue whose description's first
+   four lines include `switchboard: <slug>/T3` is this ticket from an earlier run: record
+   its identifier and url and go on to the next ticket. Match that line yourself, since
+   the list's `query` is a fuzzy word search.
 2. **Save the issue** in the team and the `source` project, with the ticket's title and
-   `labels`. The description starts with the line
-   `switchboard: <slug>/T3`, then the body; list results cut long descriptions short, so
-   the line goes first. A reference to an earlier ticket is its bare key, `ENGH-1134`,
-   which Linear links itself. Pass the `after` keys as `blockedBy`.
+   `labels`. The description is the body, with the line `switchboard: <slug>/T3` straight
+   after its callout: list results cut long descriptions short, so the line goes near the
+   top. A reference to an earlier ticket is its bare key, `ENGH-1134`, which Linear links
+   itself. Pass the `after` keys as `blockedBy`.
 3. **Confirm the relations** by getting the issue with its relations: the save's response
    leaves them out.
 4. Set `key` to the issue's identifier and `url` to its url, then delete the body file in
