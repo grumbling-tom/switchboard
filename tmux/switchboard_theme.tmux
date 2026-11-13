@@ -46,6 +46,7 @@ set -g popup-style 'bg=#15100b'
 set -g popup-border-style 'fg=#b08d57'
 set -g popup-border-lines double
 
-# Messages and copy-mode selection on a brass strip
-set -g message-style 'bg=#b08d57,fg=#2b1d14,bold'
+# Messages and copy-mode selection on a brass strip. tmux 3.7 draws the prompt over the
+# status bar; fill clears the whole bar behind it, so the nameplate doesn't show through.
+set -g message-style 'bg=#b08d57,fg=#2b1d14,bold,fill=#b08d57'
 set -g mode-style 'bg=#b08d57,fg=#2b1d14'
