@@ -18,7 +18,11 @@ notification when one is, and jump to it.
 - **`/switchboard:branch`:** copies the conversation into a new Claude session in a pane
   beside this one, with the same role. Unlike `/branch`, this session stays as it was.
 - **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
-  each with a recommended answer, until nothing is left assumed.
+  each with a recommended answer, until nothing is left assumed. Claude also starts it
+  when you ask to be grilled.
+- **`/switchboard:wait-what`:** when Claude's last message didn't land, has it pitch that
+  again in plain words, with a little context. From Matt Pocock's
+  [skills](https://github.com/mattpocock/skills).
 
 macOS only.
 
