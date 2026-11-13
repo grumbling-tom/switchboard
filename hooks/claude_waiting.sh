@@ -146,7 +146,9 @@ mark)
             --group "claude-$pane" "${sound_args[@]}")
         case "$result" in
         @CONTENTCLICKED | @ACTIONCLICKED)
-            open -a "$TERMINAL_APP"
+            # By display name, as lsappinfo reports it; `open -a` wants the bundle's file
+            # name instead (iTerm, not iTerm2).
+            osascript -e "tell application \"$TERMINAL_APP\" to activate"
             focus_pane "$pane"
             ;;
         esac
