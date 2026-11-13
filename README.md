@@ -15,6 +15,8 @@ notification when one is, and jump to it.
   at that line in VS Code.
 - **Links to tickets:** Claude writes each reference to a Linear or Jira ticket or
   project as a link titled with its name, so a click opens it.
+- **`/switchboard:branch`:** copies the conversation into a new Claude session in a pane
+  beside this one, with the same role. Unlike `/branch`, this session stays as it was.
 - **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
   each with a recommended answer, until nothing is left assumed.
 
