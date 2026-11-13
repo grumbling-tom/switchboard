@@ -17,6 +17,9 @@ notification when one is, and jump to it.
   project as a link titled with its name, so a click opens it.
 - **`/switchboard:branch`:** copies the conversation into a new Claude session in a pane
   beside this one, with the same role. Unlike `/branch`, this session stays as it was.
+- **`/switchboard:shape-tickets`:** breaks a project into a sequenced chain of tickets,
+  with stacks of dependent PRs, agrees it with you, then stores it in your tracker:
+  Linear, or files the plugin keeps for you. Nothing is written to your repo.
 - **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
   each with a recommended answer, until nothing is left assumed. Claude also starts it
   when you ask to be grilled.
@@ -126,8 +129,11 @@ an orchestrator until you press `prefix + r`.
 ## State
 
 Switchboard keeps its state in tmux pane options (`@claude_state`, `@claude_role` and
-the rest), so it disappears when the tmux server stops. The only file it writes is the
-filled-in tmux snippet, `~/.local/state/switchboard/switchboard.tmux`.
+the rest), so it disappears when the tmux server stops. Besides that it writes the
+filled-in tmux snippet, `~/.local/state/switchboard/switchboard.tmux`, and
+`/switchboard:shape-tickets` keeps its chains in the plugin's data folder,
+`~/.claude/plugins/data/switchboard-switchboard/`. A chain stored in Linear is deleted
+from there once Linear holds it.
 
 ## Development
 
