@@ -7,7 +7,7 @@ gives its path.
 ```
 <chain folder>/
   tickets.toml           the chain's structure: ids, order, dependencies, stacks, where each ticket lives
-  map.md                 framing, decisions, the ASCII chain
+  map.md                 where the change goes, the flow, data changes, delivery, decisions
   T1-<ticket-slug>.md    one body per ticket, until the store holds it
   T2-<ticket-slug>.md
 ```
@@ -58,28 +58,28 @@ url = ""                   # set by `create`
 ```
 # <title>
 
-## Framing
-One paragraph: what the chain delivers and why it is ordered this way.
-
-## Decisions
-- D1: <decision>. (<who>, <YYYY-MM-DD>)
-
-## Superseded
-What in the source material a decision overrides, naming the decision.
-
-## Chain
-<the ASCII diagram, in a fenced block, a box around each stack>
-
+## Where the change goes
+## The full flow
+## Data changes
+## Delivery
+## Decided
+## Not decided yet
 ## Later
-Work deliberately left out, one line each with the reason.
 ```
 
-A section with nothing in it holds `None.` Only settled decisions go in.
+`writing.md`, beside this file, says what each of the first six holds and how to draw
+it. **Later** is work deliberately left out, one line each with the reason. A section
+with nothing in it holds `None.`; one the source project already covers points to it.
+
+The user agreeing to the chain moves it to `agreed` with questions still open: each stays
+under **Not decided yet**, with its proposal and the ticket it blocks.
 
 ## Ticket bodies
 
 `T<n>-<ticket-slug>.md` holds the body the store gets: Requirement, Context, and
-Acceptance Criteria as testable `- [ ]` items. It is plain Markdown.
+Acceptance Criteria as testable `- [ ]` items. It is plain Markdown. Context carries the
+snippets and diagram slices from `map.md` that this ticket implements, as `writing.md`
+describes.
 
 A body refers to a ticket earlier in the table as `[[T2]]`; storing swaps in that
 ticket's key, which exists by then. It names a later ticket by its title.
@@ -91,9 +91,9 @@ ticket's key, which exists by then. It names a later ticket by its title.
    body: `Stack: layer 2 of 2, builds on <key of the layer below>`. Pass the keys of the
    ticket's `after` as its blockers. Write its `key` and `url` into `tickets.toml`, and set
    `status = "storing"` after the first.
-2. **Deliver the map** with the store's `deliver`: map.md with keys in place of ids, and
-   the chain redrawn so its box edges and arrows line up around the longer keys. Set
-   `project_url`.
+2. **Deliver the map** with the store's `deliver`: map.md with keys in place of ids,
+   Delivery's numbered list linking each key, and the chain redrawn so its box edges and
+   arrows line up around the longer keys. Set `project_url`.
 3. **Finish.** Set `status = "stored"`, then tell the user the next step:
    `The chain is stored. Next, type /switchboard:plan-ticket <key>.` Name the first ticket
    with an empty `after`, and any others that can start alongside it.

@@ -7,8 +7,12 @@ disable-model-invocation: true
 # Shape tickets
 
 Turn a project and its source material into an agreed chain of tickets, then store the
-chain in the user's tracker. Read `${CLAUDE_SKILL_DIR}/../../tickets/format.md` first: it
-defines the chain folder, `tickets.toml`, and the storing steps.
+chain in the user's tracker. Read two files first:
+
+- `${CLAUDE_SKILL_DIR}/../../tickets/format.md`: the chain folder, `tickets.toml`, and the
+  storing steps.
+- `${CLAUDE_SKILL_DIR}/../../tickets/writing.md`: how the chain is written up, from where
+  the change goes and the full flow to the delivery plan and the decisions.
 
 ## 1. Load the settings
 
@@ -41,18 +45,22 @@ Done when every source is read and you can say what the work is for.
 
 ## 3. Propose in chat
 
-Present the chain as a numbered list: per ticket, its title, kind, what it delivers, what
-it waits for, and its stack. Then the decisions the user has to make. Iterate until the
-user agrees. Mark a ticket that came from you rather than the discussion as yours.
+Present, as `writing.md` describes them: where the change goes, the full flow with its
+lettered decisions, and the data changes. Then the chain as a numbered list (per ticket,
+its title, kind, what it delivers, what it waits for, and its stack), and the decisions
+the user has to make, each with your proposal. Iterate until the user agrees. Mark a
+ticket that came from you rather than the discussion as yours.
 
 Done when the user says to store the tickets.
 
 ## 4. Write the chain
 
 Write the chain folder as `format.md` describes, with `status = "agreed"`: `tickets.toml`,
-`map.md`, and one body file per ticket. Only agreed decisions go into any of them.
+`map.md` written as `writing.md` describes, and one body file per ticket. Settled
+decisions go under Decided; open ones stay under Not decided yet.
 
-Done when every ticket has a table and a body file, and every `after` names an earlier id.
+Done when every ticket has a table and a body file, every `after` names an earlier id,
+and every lettered marker in the full flow has its line under Decided or Not decided yet.
 
 ## 5. Store
 
@@ -65,5 +73,3 @@ telling the user which `/switchboard:plan-ticket` to type next.
   instrumentation, then the real change, then rollout, then UI.
 - **Stacks:** tickets that each build directly on the one before ship as one stack of up
   to three layers. A ticket that needs nothing below it opens on its own.
-- **Context carries a code snippet** wherever the mechanism matters, naming the file it
-  lands in.

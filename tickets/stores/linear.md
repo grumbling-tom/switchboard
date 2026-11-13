@@ -38,9 +38,9 @@ after the chain's title, and set `source` to it.
 
 ## deliver
 
-Append a `## Delivery` section to the `source` project's description: Framing, the chain,
-Later, Decisions and Superseded, each under a `###` heading, after the existing text,
-which stays as it is. Set `project_url`, then delete the chain folder in a command of its
+Append map.md's sections to the `source` project's description, after the existing text,
+which stays as it is. A section that only points to one already in the description adds
+nothing. Set `project_url`, then delete the chain folder in a command of its
 own.
 
 ## fetch
