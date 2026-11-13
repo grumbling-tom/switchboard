@@ -21,8 +21,9 @@ notification when one is, and jump to it.
   each with a recommended answer, until nothing is left assumed. Claude also starts it
   when you ask to be grilled.
 - **`/switchboard:wait-what`:** when Claude's last message didn't land, has it pitch that
-  again in plain words, with a little context. From Matt Pocock's
-  [skills](https://github.com/mattpocock/skills).
+  again in plain words, with a little context. Claude also starts it when you write
+  `/wait-what` partway through a message, such as after quoting the part that lost you.
+  From Matt Pocock's [skills](https://github.com/mattpocock/skills).
 
 macOS only.
 
