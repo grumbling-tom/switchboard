@@ -56,7 +56,7 @@ and every lettered marker in the full flow has its line under Decided or Not dec
 ## 5. Store
 
 Follow **Storing** in `format.md`, running each verb as the store describes. It ends by
-telling the user which `/switchboard:plan-ticket` to type next.
+telling the user which `/sb:plan-ticket` to type next.
 
 ## Ordering
 

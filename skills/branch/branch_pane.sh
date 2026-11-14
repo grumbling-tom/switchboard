@@ -1,5 +1,5 @@
 #!/bin/bash
-# /switchboard:branch: copies this conversation into a new Claude session in a tmux pane
+# /sb:branch: copies this conversation into a new Claude session in a tmux pane
 # split beside this one, like /branch but leaving this session where it is. The new pane
 # starts in the directory Claude was launched from and takes this pane's role.
 TMUX_BIN=$(command -v tmux || echo /opt/homebrew/bin/tmux)

@@ -15,22 +15,22 @@ notification when one is, and jump to it.
   at that line in VS Code.
 - **Links to tickets:** Claude writes each reference to a Linear or Jira ticket or
   project as a link titled with its name, so a click opens it.
-- **`/switchboard:branch`:** copies the conversation into a new Claude session in a pane
+- **`/sb:branch`:** copies the conversation into a new Claude session in a pane
   beside this one, with the same role. Unlike `/branch`, this session stays as it was.
-- **`/switchboard:shape-tickets`:** breaks a project into a sequenced chain of tickets,
+- **`/sb:shape-tickets`:** breaks a project into a sequenced chain of tickets,
   with stacks of dependent PRs, agrees it with you, then stores it in your tracker:
   Linear, or files the plugin keeps for you. Nothing is written to your repo.
-- **`/switchboard:plan-ticket`:** plans one ticket from that chain, grounded in the code,
+- **`/sb:plan-ticket`:** plans one ticket from that chain, grounded in the code,
   and presents the plan for your approval. With `--stack`, it plans each layer of a stack
   in turn, each against the frozen plans below it.
-- **`/switchboard:dispatch`:** hands an approved plan to a worker Claude in its own git
+- **`/sb:dispatch`:** hands an approved plan to a worker Claude in its own git
   worktree and pane, and marks the ticket started. The worker opens a draft PR and asks
   you for the sections its template leaves to the author. With `--stack`, one worker
   builds every layer and opens a draft PR for each.
-- **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
+- **`/sb:grill-me`:** interviews you about a plan, a round of questions at a time,
   each with a recommended answer, until nothing is left assumed. Claude also starts it
   when you ask to be grilled.
-- **`/switchboard:wait-what`:** when Claude's last message didn't land, has it pitch that
+- **`/sb:wait-what`:** when Claude's last message didn't land, has it pitch that
   again in plain words, with a little context. Claude also starts it when you write
   `/wait-what` partway through a message, such as after quoting the part that lost you.
   From Matt Pocock's [skills](https://github.com/mattpocock/skills).
@@ -50,7 +50,7 @@ never installs anything.
 | python3 | Background-job detection; macOS's own is fine | `xcode-select --install` |
 | alerter | Clickable notifications | `brew install vjeantet/tap/alerter` |
 
-`/switchboard:dispatch` also needs the GitHub CLI (`brew install gh`), and for stacks its
+`/sb:dispatch` also needs the GitHub CLI (`brew install gh`), and for stacks its
 [gh-stack](https://github.com/github/gh-stack) extension
 (`gh extension install github/gh-stack`). It checks for them when it runs.
 
@@ -64,6 +64,9 @@ From a local checkout:
 ```
 
 Or try it for one session without installing: `claude --plugin-dir ~/code/switchboard`.
+
+Its commands are short: `/sb:shape-tickets`, `/sb:branch` and the rest. The plugin
+itself is still `switchboard@switchboard`, so that is the name `/plugin` commands take.
 
 ## tmux
 
@@ -128,7 +131,7 @@ session.
 | Links to code | `vscode` | Have Claude link code references so they open in VS Code; `off` to stop |
 | Links to tickets | on | Have Claude link ticket and project references, titled with their name |
 | Terminal app | `iTerm2` | The app that runs tmux, as the Dock names it: how switchboard tells you're looking at a pane, and what a notification click brings forward |
-| Tracker | `local` | Where `/switchboard:shape-tickets` stores tickets |
+| Tracker | `local` | Where `/sb:shape-tickets` stores tickets |
 | Linear team | (none) | The team key tickets go to, when Tracker is `linear` |
 | Stack depth | `3` | The most tickets one stack of dependent PRs may hold |
 
@@ -145,7 +148,7 @@ the rest), so it disappears when the tmux server stops. Besides that it writes t
 filled-in tmux snippet, `~/.local/state/switchboard/switchboard.tmux`, and
 the ticket commands keep their chains and plans in the plugin's data folder,
 `~/.claude/plugins/data/switchboard-switchboard/`. A chain stored in Linear is deleted
-from there once Linear holds it. `/switchboard:dispatch` puts each worktree in the repo's
+from there once Linear holds it. `/sb:dispatch` puts each worktree in the repo's
 `.claude/worktrees/` and adds that folder to the clone's own `.git/info/exclude`, so it
 never shows in `git status`.
 

@@ -1,5 +1,5 @@
 {
-  "name": "switchboard",
+  "name": "sb",
   "version": "0.2.0",
   "description": "See which of your parallel Claude Code sessions in tmux are waiting on you, get a macOS notification when one is, and jump to it from a picker.",
   "author": {
@@ -50,7 +50,7 @@
     "tracker": {
       "type": "string",
       "title": "Tracker",
-      "description": "Where /switchboard:shape-tickets stores tickets: as files kept by the plugin, or in Linear.",
+      "description": "Where /sb:shape-tickets stores tickets: as files kept by the plugin, or in Linear.",
       "default": "local",
       "options": [
         "local",
@@ -71,5 +71,6 @@
       "min": 1,
       "max": 9
     }
-  }
+  },
+  "displayName": "switchboard"
 }

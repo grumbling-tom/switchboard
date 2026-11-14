@@ -1,5 +1,5 @@
 #!/bin/bash
-# /switchboard:dispatch: gives a ticket its own git worktree and starts a worker Claude
+# /sb:dispatch: gives a ticket its own git worktree and starts a worker Claude
 # there, in a tmux pane split beside this one.
 #
 #   dispatch_pane.sh <worktree name> <branch | --detach> <prompt file>

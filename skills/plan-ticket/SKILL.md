@@ -7,7 +7,7 @@ disable-model-invocation: true
 # Plan one ticket
 
 Produce one ticket's implementation plan, grounded in the code, and present it for
-approval. Planning stops at approval; `/switchboard:dispatch` does the building.
+approval. Planning stops at approval; `/sb:dispatch` does the building.
 
 ## 1. Load the settings
 
@@ -69,7 +69,7 @@ and the project's decisions.
    copy it to `<plans folder>/<key, lowercase, / as ->.md`.
 2. **Match the ticket to the plan.** When the plan changed text the ticket holds, run the
    store's `update` so both say the same.
-3. Tell the user the next step: `Next, type /switchboard:dispatch <key>.`
+3. Tell the user the next step: `Next, type /sb:dispatch <key>.`
 
 ## Stack mode (`--stack <key> <key> …`)
 
@@ -91,7 +91,7 @@ Each layer still gets its own plan and its own approval.
   `<plans folder>/stack-<bottom key, lowercase>.md`: one row per layer, bottom first, with
   its key, frozen plan path, branch, and status `approved`. Dispatch reads only this file.
 - After the last layer's approval, tell the user:
-  `Next, type /switchboard:dispatch --stack <bottom key>.` A partly approved stack is not
+  `Next, type /sb:dispatch --stack <bottom key>.` A partly approved stack is not
   dispatched.
 
 ## Rules

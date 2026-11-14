@@ -112,5 +112,5 @@ ticket's key, which exists by then. It names a later ticket by its title.
    place of ids, Delivery's numbered list linking each key, and the chain redrawn so its
    box edges and arrows line up around the longer keys. Set `project_url`.
 3. **Finish.** Set `status = "stored"`, then tell the user the next step:
-   `The chain is stored. Next, type /switchboard:plan-ticket <key>.` Name the first ticket
+   `The chain is stored. Next, type /sb:plan-ticket <key>.` Name the first ticket
    with an empty `after`, and any others that can start alongside it.
