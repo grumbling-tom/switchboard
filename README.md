@@ -20,6 +20,9 @@ notification when one is, and jump to it.
 - **`/switchboard:shape-tickets`:** breaks a project into a sequenced chain of tickets,
   with stacks of dependent PRs, agrees it with you, then stores it in your tracker:
   Linear, or files the plugin keeps for you. Nothing is written to your repo.
+- **`/switchboard:plan-ticket`:** plans one ticket from that chain, grounded in the code,
+  and presents the plan for your approval. With `--stack`, it plans each layer of a stack
+  in turn, each against the frozen plans below it.
 - **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
   each with a recommended answer, until nothing is left assumed. Claude also starts it
   when you ask to be grilled.
@@ -119,6 +122,7 @@ session.
 | Terminal app | `iTerm2` | The app that runs tmux, as the Dock names it: how switchboard tells you're looking at a pane, and what a notification click brings forward |
 | Tracker | `local` | Where `/switchboard:shape-tickets` stores tickets |
 | Linear team | (none) | The team key tickets go to, when Tracker is `linear` |
+| Stack depth | `3` | The most tickets one stack of dependent PRs may hold |
 | Stack depth | `3` | The most tickets one stack of dependent PRs may hold |
 
 Links need a terminal that supports clickable links, such as iTerm2; inside tmux,
