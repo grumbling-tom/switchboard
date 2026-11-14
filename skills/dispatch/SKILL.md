@@ -55,8 +55,34 @@ prompt, so it carries everything:
   report the failure and its cause.
 - **The PR:** `gh pr create --draft`, with the title and body the repo's PR template and
   CLAUDE.md ask for. A section the template leaves to the author, such as Problem or
-  Motivation, holds only `_To be written by the author._`. Pushing is for opening the PR.
-  The PR stays a draft, with no reviewers or labels, and the tracker stays as it is.
+  Motivation, holds only `_To be written by the author._`. Pushing is for opening the PR
+  and for the CI fixes below. The PR stays a draft, with no reviewers or labels, and the
+  tracker stays as it is.
+- **Wait for CI before the closing step:**
+  - **Which checks:** the repo's CI jobs, such as lint, type check, unit tests and build.
+    Review bots and the arbiter skip drafts, so a review gate that stays pending isn't
+    waited on. Neither is a gate the plan says will go red.
+  - **Watching:** run `gh pr checks <number> --watch --fail-fast --interval 30` in the
+    background (`run_in_background`), so you are woken when it exits instead of polling.
+    Checks take a moment to register after a push: if it reports none, wait for them with
+    Monitor and run it again.
+  - **When it exits:** read `gh pr checks <number> --json name,bucket,workflow,link`. Done
+    when every CI check's bucket is `pass` or `skipping`.
+  - **A CI check fails:**
+    1. Read the failed steps with `gh run view <run id> --log-failed`; the run id is in
+       the check's `link`.
+    2. Reproduce the failure locally with the same command.
+    3. Fix the cause in a new commit titled for what it fixes, with the same trailers.
+    4. Rerun that check locally, push, and watch again.
+  - **A failure this branch didn't cause:** one that also fails on `<default branch>`, or
+    an infrastructure error such as a timeout or a runner that never started. Rerun it
+    once with `gh run rerun <run id> --failed`. If it fails again, leave it and report it
+    with its cause.
+  - **Never make a check pass by weakening it:** no skipped or deleted tests, no
+    lint-disable comments, no `any` or `@ts-ignore`, no edits to CI config.
+  - **When to stop:** after three rounds of fixes, or when a fix would go beyond the
+    plan's files and intent. Stop and report the failing check, its log excerpt and what
+    you tried.
 - A "Changes from the ticket draft" table, or any long comparison, goes in a block GitHub
   collapses, with a blank line after `</summary>`:
   `<details><summary><strong>Changes from the ticket draft</strong></summary>`.
@@ -65,8 +91,9 @@ prompt, so it carries everything:
 - "Delete files with `rm` in a command of its own, naming each path literally, inside the
   worktree or your scratchpad. Nobody is watching this pane to answer a permission
   prompt."
-- **The closing step:** print the branch, commit SHAs, test results, PR URL and any
-  departures from the plan. Then ask the user, in this pane, for each section left to the
+- **The closing step:** print the branch, commit SHAs, test results, PR URL, each CI
+  check's final state (with any fix commits and suspected flakes), and any departures from
+  the plan. Then ask the user, in this pane, for each section left to the
   author, and write their words in verbatim with `gh pr edit <number> --body-file`.
 
 ## 4. Start the worker
@@ -94,8 +121,9 @@ to `dispatched` in the manifest.
 
 ## 6. Report and move on
 
-A short table: pane, worktree, branch, and the ticket's new status. Say the worker stops
-at the end to ask for the author's sections in its own pane. Then carry on without
+A short table: pane, worktree, branch, and the ticket's new status. Say the worker waits
+for CI on its draft PR and fixes what fails, then stops to ask for the author's sections
+in its own pane. Then carry on without
 waiting.
 
 ## Stack mode
@@ -131,8 +159,11 @@ Everything above applies, with these differences.
     ready. Exit code 9 means the repository hasn't enabled stacked PRs: stop and report,
     with nothing pushed. Then set each PR's title and body as the single-ticket prompt
     says, plus a line `Stack: layer N of M, builds on #<PR below>`.
+  - **CI, for every PR:** wait for it as the single-ticket prompt says, bottom PR first. A
+    fix goes on the layer that caused the failure, as above, so a lower-layer fix restarts
+    the wait for every PR above it.
   - **The closing step, once for the whole stack:** a table of layer, branch, PR URL,
-    SHAs, test results and departures, then the author's sections for each PR in turn,
+    SHAs, test results, CI state and departures, then the author's sections for each PR in turn,
     bottom first.
 - **After the worker finishes,** the user reviews bottom-up, marking each layer ready only
   once the one below is approved. `gh stack sync` brings the stack up to date; it prints

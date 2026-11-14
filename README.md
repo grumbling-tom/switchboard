@@ -24,8 +24,9 @@ notification when one is, and jump to it.
   and presents the plan for your approval. With `--stack`, it plans each layer of a stack
   in turn, each against the frozen plans below it.
 - **`/sb:dispatch`:** hands an approved plan to a worker Claude in its own git
-  worktree and pane, and marks the ticket started. The worker opens a draft PR and asks
-  you for the sections its template leaves to the author. With `--stack`, one worker
+  worktree and pane, and marks the ticket started. The worker opens a draft PR, waits for
+  its CI checks and fixes any that fail, then asks you for the sections its template
+  leaves to the author. With `--stack`, one worker
   builds every layer and opens a draft PR for each.
 - **`/sb:grill-me`:** interviews you about a plan, a round of questions at a time,
   each with a recommended answer, until nothing is left assumed. Claude also starts it
