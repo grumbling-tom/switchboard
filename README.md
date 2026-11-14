@@ -119,6 +119,7 @@ session.
 | Terminal app | `iTerm2` | The app that runs tmux, as the Dock names it: how switchboard tells you're looking at a pane, and what a notification click brings forward |
 | Tracker | `local` | Where `/switchboard:shape-tickets` stores tickets |
 | Linear team | (none) | The team key tickets go to, when Tracker is `linear` |
+| Stack depth | `3` | The most tickets one stack of dependent PRs may hold |
 
 Links need a terminal that supports clickable links, such as iTerm2; inside tmux,
 switchboard turns on tmux's `hyperlinks` terminal feature so they pass through.

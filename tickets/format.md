@@ -61,8 +61,9 @@ url = ""                   # set by `create`
   dropped after agreement keeps its table, with `kind = "dropped"`, and is never stored.
 - **Kinds** are `schema`, `prompt`, `wiring`, `instrumentation`, `change`, `rollout`,
   `ui`, `other` and `dropped`.
-- **Stacks** have at most three layers, numbered bottom first, and each layer's `after`
-  includes the layer below.
+- **Stacks** have at most the stack depth's layers (the Stack depth setting, 3 unless the
+  user changed it), numbered bottom first, and each layer's `after` includes the layer
+  below.
 - `status` moves to `agreed` when the user agrees to the chain, to `storing` when the
   first ticket is created, and to `stored` once the map is delivered.
 

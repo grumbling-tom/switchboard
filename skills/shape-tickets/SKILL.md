@@ -18,22 +18,12 @@ chain in the user's tracker. Read two files first:
 
 - Tracker: `${user_config.tracker}`
 - Linear team: `${user_config.linear_team}`
+- Stack depth: `${user_config.max_stack_layers}`
+- Data folder: `${CLAUDE_PLUGIN_DATA}`
+- Plugin folder: `${CLAUDE_SKILL_DIR}/../..`
 
-A value starting with `$` is a setting the user never saved: the tracker is then `local`
-and the team is empty.
-
-- **The repo.** Its name is the `origin` remote's path with `/` replaced by `-`
-  (`grumbling-tom-switchboard`), else the repo folder's name.
-- **A team for this repo.** `${CLAUDE_PLUGIN_DATA}/repos/<repo>.toml` may hold a
-  `linear_team` that overrides the setting for this repo. With the tracker `linear` and no
-  team from either, ask the user for one, and offer to remember it there.
-- **The store.** Read `${CLAUDE_SKILL_DIR}/../../tickets/stores/<tracker>.md`. Its verbs
-  (`create`, `deliver`, `fetch`, `start`) say how to do each step on that tracker. When
-  `${CLAUDE_PLUGIN_DATA}/checked.txt` lacks a `<tracker> <team>` line, run the store's
-  **First use** before storing, then add the line.
-- **The chain folder** is `${CLAUDE_PLUGIN_DATA}/chains/<repo>/<slug>/`.
-
-Done when you can name the tracker, the team, and the chain folder's path.
+Follow `<plugin folder>/tickets/settings.md` with these values. This skill uses the chain
+folder.
 
 ## 2. Understand
 
@@ -72,5 +62,6 @@ telling the user which `/switchboard:plan-ticket` to type next.
 
 - **Data shape first**, then wiring that shows the whole flow on stub data, then
   instrumentation, then the real change, then rollout, then UI.
-- **Stacks:** tickets that each build directly on the one before ship as one stack of up
-  to three layers. A ticket that needs nothing below it opens on its own.
+- **Stacks:** tickets that each build directly on the one before ship as one stack of at
+  most the stack depth's layers; a longer run splits into stacks that follow each other. A
+  ticket that needs nothing below it opens on its own.
