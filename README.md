@@ -23,6 +23,10 @@ notification when one is, and jump to it.
 - **`/switchboard:plan-ticket`:** plans one ticket from that chain, grounded in the code,
   and presents the plan for your approval. With `--stack`, it plans each layer of a stack
   in turn, each against the frozen plans below it.
+- **`/switchboard:dispatch`:** hands an approved plan to a worker Claude in its own git
+  worktree and pane, and marks the ticket started. The worker opens a draft PR and asks
+  you for the sections its template leaves to the author. With `--stack`, one worker
+  builds every layer and opens a draft PR for each.
 - **`/switchboard:grill-me`:** interviews you about a plan, a round of questions at a time,
   each with a recommended answer, until nothing is left assumed. Claude also starts it
   when you ask to be grilled.
@@ -45,6 +49,10 @@ never installs anything.
 | fzf | The picker | `brew install fzf` |
 | python3 | Background-job detection; macOS's own is fine | `xcode-select --install` |
 | alerter | Clickable notifications | `brew install vjeantet/tap/alerter` |
+
+`/switchboard:dispatch` also needs the GitHub CLI (`brew install gh`), and for stacks its
+[gh-stack](https://github.com/github/gh-stack) extension
+(`gh extension install github/gh-stack`). It checks for them when it runs.
 
 ## Install
 
@@ -123,7 +131,6 @@ session.
 | Tracker | `local` | Where `/switchboard:shape-tickets` stores tickets |
 | Linear team | (none) | The team key tickets go to, when Tracker is `linear` |
 | Stack depth | `3` | The most tickets one stack of dependent PRs may hold |
-| Stack depth | `3` | The most tickets one stack of dependent PRs may hold |
 
 Links need a terminal that supports clickable links, such as iTerm2; inside tmux,
 switchboard turns on tmux's `hyperlinks` terminal feature so they pass through.
@@ -136,9 +143,11 @@ an orchestrator until you press `prefix + r`.
 Switchboard keeps its state in tmux pane options (`@claude_state`, `@claude_role` and
 the rest), so it disappears when the tmux server stops. Besides that it writes the
 filled-in tmux snippet, `~/.local/state/switchboard/switchboard.tmux`, and
-`/switchboard:shape-tickets` keeps its chains in the plugin's data folder,
+the ticket commands keep their chains and plans in the plugin's data folder,
 `~/.claude/plugins/data/switchboard-switchboard/`. A chain stored in Linear is deleted
-from there once Linear holds it.
+from there once Linear holds it. `/switchboard:dispatch` puts each worktree in the repo's
+`.claude/worktrees/` and adds that folder to the clone's own `.git/info/exclude`, so it
+never shows in `git status`.
 
 ## Development
 
