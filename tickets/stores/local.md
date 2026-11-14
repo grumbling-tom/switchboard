@@ -15,6 +15,10 @@ that ticket's body file, titled with its id and title: `[T2 Manager prompt](T2-m
 Set `key` to the ticket's id and `url` to the body file's absolute path. A ticket that
 already has a `url` is stored; skip it.
 
+## update
+
+Edit the body file at the ticket's `url`.
+
 ## deliver
 
 map.md is the project. Set `project_url` to its absolute path.

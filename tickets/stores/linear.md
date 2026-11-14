@@ -36,6 +36,13 @@ after the chain's title, and set `source` to it.
 4. Set `key` to the issue's identifier and `url` to its url, then delete the body file in
    a command of its own.
 
+## update
+
+Get the issue, then save it with a `patch` rather than a whole new description, so edits
+people made in Linear survive. Anchor each patch on text the description actually holds:
+Linear rewrites keys into `<issue>` tags and escapes some characters, so anchor on plain
+words near them. Linear doesn't render HTML, so a table stays plain Markdown.
+
 ## deliver
 
 Append map.md's sections to the `source` project's description, after the existing text,
@@ -46,7 +53,8 @@ own.
 ## fetch
 
 A project: get it with its resources, and read every linked document. An issue: get it by
-key, then list its comments, since the issue alone leaves them out.
+key, then list its comments, since the issue alone leaves them out. Its `gitBranchName` is
+the branch name to use for it.
 
 ## start
 
