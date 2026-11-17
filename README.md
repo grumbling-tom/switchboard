@@ -5,11 +5,14 @@ A Claude Code plugin to manage parallel work in tmux – blinking lights include
 See at a glance which sessions are waiting on you, get notified when one is and jump
 straight to it.
 
-<!-- TODO: banner screenshot: panes with lamps lit, the picker open, a notification -->
+![Three tmux windows of Claude sessions, with a lamp for each in the status bar and on its pane border](docs/windows.png)
 
 - **Lamps** in the status bar and on pane borders show which sessions are working,
   blocked or done.
 - **`prefix + j`** opens a picker of every session, waiting ones first. Enter jumps to it.
+
+  ![The picker, listing sessions by lamp with a live preview of the selected pane](docs/picker.png)
+
 - **`/sb:shape-tickets`** breaks a project into a sequenced chain of tickets.
 - **`/sb:plan-ticket`** plans one ticket from that chain, for your approval.
 - **`/sb:dispatch`** hands an approved plan to a worker Claude in its own worktree and
