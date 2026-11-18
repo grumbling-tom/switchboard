@@ -34,7 +34,7 @@
   again in plain words, with a little context. Claude also starts it when you write
   `/wait-what` partway through a message, such as after quoting the part that lost you.
   From Matt Pocock's [skills](https://github.com/mattpocock/skills).
-- **`/sb:ascii-diagram`:** draws a plain-ASCII diagram of how tables relate, read
+- **`/sb:entity-ascii`:** draws a plain-ASCII diagram of how tables relate, read
   from the real schema, with cardinality on each line and a sentence per relationship.
   Claude also starts it when you ask how entities relate or to sketch a data model.
 
