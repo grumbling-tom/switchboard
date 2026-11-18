@@ -1,9 +1,9 @@
 ---
-name: entity-diagram
-description: Draw a plain-ASCII entity-relationship diagram that explains how entities relate — tables as boxes with their keys, lines labelled with cardinality at both ends and a verb — followed by a one-line "read it as" sentence per relationship and callouts for anything surprising. Built from the real schema (migrations, ORM models, DDL), never from guesses. Use when the user says "/entity-diagram", "draw the ERD", "ascii diagram of these tables", "how do X and Y relate", "sketch the data model", "show me the relationships", or when explaining a relational data model, a join path or a proposed schema change would be clearer as a picture.
+name: ascii-diagram
+description: Draw a plain-ASCII entity-relationship diagram that explains how entities relate — tables as boxes with their keys, lines labelled with cardinality at both ends and a verb — followed by a one-line "read it as" sentence per relationship and callouts for anything surprising. Built from the real schema (migrations, ORM models, DDL), never from guesses. Use when the user says "/ascii-diagram", "draw the ERD", "ascii diagram of these tables", "how do X and Y relate", "sketch the data model", "show me the relationships", or when explaining a relational data model, a join path or a proposed schema change would be clearer as a picture.
 ---
 
-# Entity diagram
+# ASCII diagram
 
 Explain how entities relate with a diagram that pastes cleanly anywhere: a terminal, a PR
 body, Slack, a code comment. Plain ASCII only (`+ - | < > v ^ .`), no box-drawing characters,
